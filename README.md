@@ -14,4 +14,4 @@ The goal of our application is to connect students and other users in new ways t
 ### Architecture Plan
 The website’s frontend and business logic will be created using React, Express, JavaScript, JSX, HTML, and CSS to display posts, allow interaction, and provide user navigation options.
 This user interface will communicate with the backend to record and maintain information.
-The backend will use a PostgreSQL database to store user accounts and information and store posts and comments.
+The backend will use a PostgreSQL database to store user accounts and information and store posts and comments. 
