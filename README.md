@@ -27,4 +27,4 @@ This user interface will communicate with the backend to record and maintain inf
 The backend will use a PostgreSQL database to store user accounts and information and store posts and comments.
 
 ### Architecture Diagram
-![Architecture Diagram](Milestone1.jpg)
+![Architecture Diagram](https://github.com/CSCI-3308-CU-Boulder/3308SP21_section014_2/blob/1fca83d33efaa0da43fa08665fe7485d671f0e98/Architecture%20Diagram.JPG)
