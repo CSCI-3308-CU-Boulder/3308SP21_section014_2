@@ -1,3 +1,7 @@
+<!-- Page for Registration -->
+<!-- Dylan Kriegman March 31, 2021-->
+
+
 <html lang="en">
     <head>
 
@@ -7,12 +11,13 @@
         <!-- Bootstrap CSS from Bootstrap CDN-->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         
-        <title>Join Buff Forums</title>
-        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-        <div id="the-navbar">
-            
-        </div>
+        <!-- Bootstrap JavaScript Dependencies -->
+        <!-- jQuery, Popper.js, and Boostrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
+        <title>Registration</title>
     </head>
     
 
@@ -45,30 +50,89 @@
        
         <div class="container">
             <div class="col-sm">
-                <div class="form-group">
-                    <label for="inputUserName">Username</label>
-                    <input type="text" class="form-control" id="userNameInput" placeHolder="Username">
-                </div>
-                
+                <form class="registrationForm" novalidate>
 
-                <div class="form-group">
-                    <label for="inputPassword">Password</label>
-                    <input type="password" class="form-control" id="passwordInput" placeHolder="Password">
-                </div>
+               
+                    <div class="form-group">
+                        <label for="userNameInput" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="userNameInput" placeHolder="Username" size=20 required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please choose a username.
+                        </div>
+                    </div>
+                    
 
-                <div class="form-group">
-                    <label for="inputPasswordConfirm">Confirm Password</label>
-                    <input type="password" class="form-control" id="passwordConfirmInput" placeHolder="Password">
-                </div>
+                    <div class="form-group">
+                        <label for="passwordInput">Password</label>
+                        <input type="password" class="form-control" id="passwordInput" placeHolder="Password" name="originalPassword" size=25 required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>  
+                        <div class="invalid-feedback">
+                            Please choose a password.
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="inputEmail">Email</label>
-                    <input type="email" class="form-control" id="emailInput" placeholder="Enter email">
-                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
+                    <div class="form-group">
+                        <label for="confirmPasswordInput">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPasswordInput" placeHolder="Password" name="confirmPassword" size=25 required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div> 
+                        <div class="invalid-feedback">
+                            Please confirm your password.
+                        </div>
+                    </div>
 
-                <button type="Submit" class="btn btn-primary">Submit</button>
- 
+                    <div class="form-group">
+                        <label for="emailInput">Email</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter email" size=25 required >
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div> 
+                        <div class="invalid-feedback">
+                            Please enter your email.
+                        </div>
+                        
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  
+                    </div>
+
+                    <button type="Submit" class="btn btn-primary">Submit</button>
+                </form>
+
+                <!-- Script for Validating Form Input-->
+                <!-- Next steps-->
+                <!-- Check if the username/email are already in the databse -->
+                <!-- Check if password equals confirmation-->
+                <!-- Check if password meets security requirements -->
+                <!-- If all checks pass, add user to database and login -->
+
+                <script>
+                    // Example starter JavaScript for disabling form submissions if there are invalid fields
+                    (function () {
+                    'use strict'
+
+                    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                    var forms = document.querySelectorAll('.registrationForm')
+
+                    // Loop over them and prevent submission
+                    Array.prototype.slice.call(forms)
+                        .forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault()
+                                    event.stopPropagation()
+                                }
+
+                                    form.classList.add('was-validated')
+                            }, false)
+                        })
+                    })()
+                </script>
                 
 
             </div>
@@ -86,11 +150,13 @@
 
 
 
-        <!-- Bootstrap JavaScript Dependencies -->
-        <!-- jQuery, Popper.js, and Boostrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
 
     </body>
 </html>
+
+
+
+
+
+
