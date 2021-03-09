@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <script>
+    var totalComments = 0;
+    var text = [];
+    var idString = [];
     function postComment() {
-        var text = document.getElementById("comment").value;
+        text[totalComments] = document.getElementById("comment").value + "<br>";
         document.getElementById("comments").innerHTML = text;
+        totalComments++;
+        document.getElementById("comment").value = "";
     }
 </script>
+<style type="text/css">
+    #comments {
+        border: 2px solid;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+    }
+</style>
 
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -28,7 +40,7 @@
             </div>
         </div>
         <label for="comments"><b>Comments:</b></label>
-        <p id="comments"></p>
+        <p id = "comments"></p>
         <p></p>
 
 

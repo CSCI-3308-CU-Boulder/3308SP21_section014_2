@@ -9,27 +9,36 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Bootstrap CSS from Bootstrap CDN-->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
         <!-- css for navbars -->
         <link rel="stylesheet" href="homepage.css">
+        <link rel="stylesheet" href="forms.css">
         <title>Login</title>
 
     </head>
 
     <body>
-
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+         <!-- Navbar -->
+         <nav class="navbar navbar-expand-sm navbar-dark bg-dark" id="register-navbar">
+            <a class="navbar-brand" href="./homePage.html">
+                <span class="navbar-text">
+                    Buff Forums
+                </span>
+            </a>
             <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <h2>Buff Forums</h2>
+            
+                <li class="nav-item">
+                <a class="nav-link" href="./login.html">Login</a>
                 </li>
             </ul>
         </nav>
 
+       
+
         <!-- Login Form-->
-        <div class="container">
-            <div class="col-sm">
+        <div class="container" id="formContainer">
+            <div class="col-auto-sm">
                 <form class="loginForm" novalidate>
 
 
@@ -49,6 +58,12 @@
                         </div>
                     </div>
                     <button type="Login" class="btn btn-primary">Login</button>
+                    
+                    <small class="form-text text-muted">
+                        <a href="./registerPage.html">
+                            Don't have an account?
+                        </href>
+                    </small>
                 </form>
 
                 <!-- Script for Validating Form Input-->
