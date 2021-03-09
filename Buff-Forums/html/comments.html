@@ -1,5 +1,23 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
+<script>
+    var totalComments = 0;
+    var text = [];
+    var idString = [];
+    function postComment() {
+        text[totalComments] = document.getElementById("comment").value + "<br>";
+        document.getElementById("comments").innerHTML = text;
+        totalComments++;
+        document.getElementById("comment").value = "";
+    }
+</script>
+<style type="text/css">
+    #comments {
+        border: 2px solid;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+    }
+</style>
 
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -9,18 +27,21 @@
 <body>
     <div class="container">
         <p></p>
-        <a class="btn btn-primary mx-auto d-block" data-toggle="collapse" href="#comment" role="button"
-            aria-expanded="false" aria-controls="comment">
+        <a class="btn btn-primary mx-auto d-block" data-toggle="collapse" href="#commentButton" role="button"
+            aria-expanded="false" aria-controls="commentButton">
             Create Comment
         </a>
-        <div class="collapse" id="comment">
-            <div class="form-group">
+        <div class="collapse" id="commentButton">
+            <div class="form">
                 <label for="comment">Comment:</label>
-                <textarea class="form-control" rows="5" id="comment"></textarea>
+                <textarea type="text" class="form-control" id="comment"></textarea>
+                <button id="submitComment" class="btn btn-primary mx-auto d-block"
+                    onclick="postComment()">Submit</button>
             </div>
         </div>
+        <label for="comments"><b>Comments:</b></label>
+        <p id = "comments"></p>
         <p></p>
-        <button type="submit" class="btn btn-primary mx-auto d-block">Submit</button>
 
 
     </div>
@@ -35,6 +56,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </body>
 
 </html>
