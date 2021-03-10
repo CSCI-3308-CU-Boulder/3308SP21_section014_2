@@ -17,8 +17,8 @@
 
     <body>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark" id="register-navbar">
-            <a class="navbar-brand" href="./homePage.html">
-                <span class="navbar-text">
+            <a class="navbar-brand">
+                <span class="navbar-text" href="./registerPage">
                     Buff Forums
                 </span>
                
@@ -53,7 +53,7 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div>  
-                        <div class="invalid-feedback">
+                        <div id="invalidPasswordFeedback" class="invalid-feedback">
                             Please choose a password.
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div> 
-                        <div class="invalid-feedback">
+                        <div id="invalidConfirmationFeedback" class="invalid-feedback">
                             Please confirm your password.
                         </div>
                     </div>
@@ -97,27 +97,66 @@
                 <!-- Check if password equals confirmation-->
                 <!-- Check if password meets security requirements -->
                 <!-- If all checks pass, add user to database and login -->
-
+                    
                 <script>
-                    window.addEventListener('load',function() {
+                    // returns true if the password is strong, false otherwise
+                    // a password is strong if it is more than 8 characters and contains at least 1
+                    // character that is uppercase, lowercase, and numerical
 
-                        var form=document.getElementsByClassName("registrationForm");
+                    
+                    window.addEventListener('load', function() {
+                        
+                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                        var forms = document.getElementsByClassName('registrationForm');
 
-                        form.addEventListener('submit', function (event) {
-                            var passwordInput=document.getElementById("passwordInput").value;
-                            var confirmPasswordInput=document.getElementById("confirmPasswordInput").value;
-                            //Boostrap validity checks
-                            if (form.checkValidity()===false) {
+                        // Loop over them and prevent submission
+                        var validation = Array.prototype.filter.call(forms, function(form) {
+
+                        form.addEventListener('submit', function(event) {
+                 
+                            var passwordElement=document.getElementById("passwordInput");
+                            var confirmationElement=document.getElementById("confirmPasswordInput");
+                            
+                            var passwordInput=String(passwordElement.value);
+                            var confirmationInput=String(confirmationElement.value);
+
+                            //check if password is storng
+                            var isLongEnough=passwordInput.length>=8
+                            var containsDigits=passwordInput.match(/[0-9]/g);
+                            var containsLowerCase=passwordInput.match(/[a-z]/g);
+                            var containsUpperCase=passwordInput.match(/[A-Z]/g);
+                            
+                            var isPasswordStrong=isLongEnough && containsDigits && containsLowerCase && containsUpperCase;
+
+
+                            //check if password is strong and equals confirmation
+                            passwordElement.setCustomValidity((passwordInput===confirmationInput && isPasswordStrong) ? "" : "bad")
+                            confirmationElement.setCustomValidity((passwordInput===confirmationInput && isPasswordStrong) ? "" : "bad")
+                        
+                            //modify error message for non-matching confirmation
+                            if(passwordInput!==confirmationInput) {
+                                document.getElementById("invalidPasswordFeedback").innerHTML="Sorry, your passsword doesn't match the confirmation"
+                                document.getElementById("invalidConfirmationFeedback").innerHTML="Sorry, your passsword doesn't match the confirmation"
+                            }
+
+                            //modify error message for weak passwords
+                            else if(isPasswordStrong===false) {
+                                document.getElementById("invalidPasswordFeedback").innerHTML="Sorry, your password is too weak"
+                                document.getElementById("invalidConfirmationFeedback").innerHTML="Sorry, your password is too weak"
+                            }
+         
+                            if (form.checkValidity() === false) {
                                 event.preventDefault();
                                 event.stopPropagation();
                             }
-                            //check if passwords are equal
-                            else if (passwordInput!==confirmPasswordInput) {
-                                event.preventDefault();
-                                event.stopPropagation();
-                            }
-                        },false);
-                    });
+
+                            form.classList.add('was-validated');
+                        }, false);
+                        });
+                    }, false);
+                
+
+          
 
                     
 
