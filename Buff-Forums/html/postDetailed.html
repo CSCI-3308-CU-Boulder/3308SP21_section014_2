@@ -14,6 +14,7 @@
         var deleteB = document.createElement("BUTTON");
         edit.className = "btn btn-outline-primary btn-sm";
         edit.innerText = "edit";
+        edit.onclick = "editButton()";
         deleteB.className = "btn btn-outline-primary btn-sm";
         deleteB.innerText = "delete";
         username.innerText = "Example Username";
@@ -21,7 +22,7 @@
         content.innerText = document.getElementById("comment").value;
         post.style.borderBottom = "1px solid grey";
         content.style.textIndent = "20px";
-        document.getElementById("postedComments").appendChild(post);
+        document.getElementById("postComments").appendChild(post);
         post.appendChild(username);
         post.appendChild(content);
         post.appendChild(edit);
@@ -164,9 +165,6 @@
                 <button id="submitComment" class="btn btn-primary mx-auto d-block"
                     onclick="postComment()">Submit</button>
             </div>
-        </div>
-        <div class="jumbotron" id="postedComments">
-
         </div>
     </div>
 
