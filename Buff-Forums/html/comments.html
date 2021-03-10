@@ -10,6 +10,12 @@
         var post = document.createElement("P");
         var username = document.createElement("P");
         var content = document.createElement("P");
+        var edit = document.createElement("BUTTON");
+        var deleteB = document.createElement("BUTTON");
+        edit.className = "btn btn-outline-primary btn-sm";
+        edit.innerText = "edit";
+        deleteB.className = "btn btn-outline-primary btn-sm";
+        deleteB.innerText = "delete";
         username.innerText = "Example Username";
         username.style.fontStyle = "italic";
         content.innerText = document.getElementById("comment").value;
@@ -18,6 +24,8 @@
         document.getElementById("postedComments").appendChild(post);
         post.appendChild(username);
         post.appendChild(content);
+        post.appendChild(edit);
+        post.appendChild(deleteB);
         document.getElementById("comment").value = "";
     }
 </script>
