@@ -41,7 +41,7 @@
                         <div class="valid-feedback">
                             Looks good!
                         </div>
-                        <div class="invalid-feedback">
+                        <div id="invalidUserNameFeedback" class="invalid-feedback">
                             Please choose a username.
                         </div>
                     </div>
@@ -49,6 +49,7 @@
 
                     <div class="form-group">
                         <label for="passwordInput">Password</label>
+                        
                         <input type="password" class="form-control" id="passwordInput" placeHolder="Password" name="originalPassword" size=25 required>
                         <div class="valid-feedback">
                             Looks good!
@@ -56,6 +57,12 @@
                         <div id="invalidPasswordFeedback" class="invalid-feedback">
                             Please choose a password.
                         </div>
+                        <small class="form-text text-muted">
+                            <a>
+                                Passwords must be at least 8 characters and contain a lowercase letter, uppercase letter, and number
+                     
+                            </a>
+                        </small>
                     </div>
 
                     <div class="form-group">
@@ -67,7 +74,9 @@
                         <div id="invalidConfirmationFeedback" class="invalid-feedback">
                             Please confirm your password.
                         </div>
+                        
                     </div>
+
 
                     <div class="form-group">
                         <label for="emailInput">Email</label>
@@ -103,7 +112,6 @@
                     // a password is strong if it is more than 8 characters and contains at least 1
                     // character that is uppercase, lowercase, and numerical
 
-                    
                     window.addEventListener('load', function() {
                         
                         // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -116,18 +124,30 @@
                  
                             var passwordElement=document.getElementById("passwordInput");
                             var confirmationElement=document.getElementById("confirmPasswordInput");
-                            
+                            var userNameElement=document.getElementById("userNameInput");
+
                             var passwordInput=String(passwordElement.value);
                             var confirmationInput=String(confirmationElement.value);
+                            var userNameInput=String(userNameElement.value);
+
+                            //check if the user name contains whitespace
+                            var containsWhiteSpace=userNameInput.indexOf(' ')!==-1
+
+                            userNameElement.setCustomValidity(containsWhiteSpace ? "bad":"");
+
+                            //modify error message for user name with whitespace
+                            if(containsWhiteSpace) {
+                                document.getElementById("invalidUserNameFeedback").innerHTML="Sorry, user name's cannot contain whitespace"
+                                
+
+                            }
 
                             //check if password is storng
                             var isLongEnough=passwordInput.length>=8
                             var containsDigits=passwordInput.match(/[0-9]/g);
                             var containsLowerCase=passwordInput.match(/[a-z]/g);
-                            var containsUpperCase=passwordInput.match(/[A-Z]/g);
-                            
+                            var containsUpperCase=passwordInput.match(/[A-Z]/g);                            
                             var isPasswordStrong=isLongEnough && containsDigits && containsLowerCase && containsUpperCase;
-
 
                             //check if password is strong and equals confirmation
                             passwordElement.setCustomValidity((passwordInput===confirmationInput && isPasswordStrong) ? "" : "bad")
@@ -148,6 +168,13 @@
                             if (form.checkValidity() === false) {
                                 event.preventDefault();
                                 event.stopPropagation();
+                            }
+                            else {
+                                event.preventDefault();
+                                //redirects user to login page if validation passes
+                                console.log("redirecting user to loginPage");
+                                window.location.replace("/html/loginPage.html")
+
                             }
 
                             form.classList.add('was-validated');

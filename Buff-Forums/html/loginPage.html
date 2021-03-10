@@ -81,14 +81,12 @@
                                     event.stopPropagation();
                                 }
                                 else {
-                                    
                                     event.preventDefault();
                                     // redirects user to homepage if validation passes
                                     console.log("redirecting user to homePage")
-                                    var newUrl=window.location.host + "/" + "html/homePage.html"
-                                    console.log(newUrl)
                                     window.location.replace("/html/homePage.html")
                                 }
+                                form.classList.add('was-validated');
                                 
                                
                             }, false);
