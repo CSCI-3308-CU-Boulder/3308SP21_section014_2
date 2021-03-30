@@ -2,10 +2,6 @@ To start Application:
 
 $ docker-compose up
 
-To view Application:
-
-Go to localhost:3000 in browser
-
 To close Application:
 
 $ docker-compose down
@@ -16,3 +12,6 @@ $ docker-volume list
 
 $ docker volume rm  buff-forums_buff_forums_volume
 
+To view Application:
+
+localhost:3000 in browser
