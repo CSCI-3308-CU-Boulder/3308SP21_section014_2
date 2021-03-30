@@ -62,12 +62,12 @@ app.get('/register', function(req, res) {
 
 /*Add your other get/post request handlers below here: */
 
-/*
+
 app.get('/home', function(req, res) {
-	var query = 'select * from favorite_colors;';
+	var query = 'select * from ';
 	db.any(query)
         .then(function (rows) {
-            res.render('pages/home',{
+            res.render('pages/homePage',{
 				my_title: "Home Page",
 				data: rows,
 				color: '',
@@ -77,7 +77,7 @@ app.get('/home', function(req, res) {
         })
         .catch(function (err) {
             console.log('error', err);
-            res.render('pages/home', {
+            res.render('pages/homePage', {
                 my_title: 'Home Page',
                 data: '',
                 color: '',
@@ -85,7 +85,7 @@ app.get('/home', function(req, res) {
             })
         })
 });
-*/
+
 
 app.listen(3000);
 console.log('3000 is the magic port');
