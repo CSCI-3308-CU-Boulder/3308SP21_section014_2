@@ -94,8 +94,6 @@ app.get('/home', function(req, res) {
 	db.any(query)
         .then(function (rows) {
             res.render('pages/homePage',{
-				local_css:"pages/homepage.css",
-				my_title: "Home Page",
 				data: rows,
 				color: '',
 				color_msg: ''
@@ -105,8 +103,6 @@ app.get('/home', function(req, res) {
         .catch(function (err) {
             console.log('error', err);
             res.render('pages/homePage', {
-                my_title: 'Home Page',
-				local_css:"pages/homepage.css",
                 data: '',
                 color: '',
                 color_msg: ''
