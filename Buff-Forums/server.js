@@ -61,6 +61,8 @@ app.get('/register', function(req, res) {
 });
 
 /*Add your other get/post request handlers below here: */
+
+/*
 app.get('/home', function(req, res) {
 	var query = 'select * from favorite_colors;';
 	db.any(query)
