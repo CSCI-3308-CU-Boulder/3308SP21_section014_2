@@ -39,38 +39,54 @@ var db = pgp(dbConfig);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
+app.use(express.static(__dirname));
 
+/*Add your get/post request handlers below here: */
 
-// app.get('/login',function(req,res) {
-//     res.render('pages/loginPage', {
-//         my_title:"Login Page"
-//     });
-// });
+app.get('/register',function(req,res) {
+	res.render('pages/registerPage');
+});
 
-// app.get('/register',function(req,res) {
-//     res.render('pages/registerPage', {
-//         my_title:"Register"
-//     })
-// })
-
-/*
-// login page
-app.get('/', function(req, res) {
-	res.render('pages/login',{
-		local_css:"signin.css",
-		my_title:"Login Page"
+app.post('/register/create',function(req,res) {
+	const newUsername=req.body.newUsername;
+	const newPassword=req.body.newPassword;
+	const query=`INSERT INTO logins(username, pwd) VALUES('${newUsername}','${newPassword}');`;
+	db.any(query)
+	.then(function(info) {
+		console.log('Successful Registration');
+		res.send({registrationWorked:true});
+	})
+	.catch(function(err) {
+		console.log(`Registration Error:\n ${err}`);
+		res.send({registrationWorked:false});
 	});
 });
 
-// registration page
-app.get('/register', function(req, res) {
-	res.render('pages/register',{
-		my_title:"Registration Page"
-	});
+app.get('/login',function(req,res) {
+	res.render('pages/loginPage');
 });
 
-/*Add your other get/post request handlers below here: */
+app.post('/login/submit',function(req,res) {
+	const userNameInput=req.body.userNameInput;
+	const passwordInput=req.body.passwordInput;
+	const query=`select exists(select * from logins where username='${userNameInput}' and pwd='${passwordInput}');`;
+	db.any(query)
+	.then(function(info) {
+		//query worked - check if username matches password		
+		const validLogin=info[0].exists;
+		if(validLogin) {
+			console.log("Valid Login");
+			res.send({validLogin:true});
+		}
+		else {
+			console.log("Invalid Login");
+			res.send({validLogin:false});
+		}
+	})
+	.catch(function(err) {
+		console.log(`Login Error:\n ${err}`);
+	});
+});
 
 
 app.get('/home', function(req, res) {
