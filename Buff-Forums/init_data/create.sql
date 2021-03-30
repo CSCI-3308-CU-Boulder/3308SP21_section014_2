@@ -1,3 +1,20 @@
+DROP TABLE iF EXISTS posts CASCADE;
+CREATE TABLE IF NOT EXISTS posts(
+    post_id bpcharacter default "000" NOT NULL PRIMARY KEY,
+	Post_title character varying(20) default "I'm back baby" NOT NULL,
+    subredditName character varying(20) default "christinaity and things" NOT NULL,
+    postCreatorName character varying(30) default "jesus" NOT NULL,
+	voteAmount smallint default 1,
+	Comments JSON_ARRAY (
+		JSON_OBJECT()
+	),
+	post_link character varying(20) default "who knows" NOT NULL,
+
+);
+
+
+
+
 DROP TABLE IF EXISTS football_games CASCADE;
 CREATE TABLE IF NOT EXISTS football_games (
   visitor_name VARCHAR(30),       /* Name of the visiting team                     */
@@ -7,6 +24,10 @@ CREATE TABLE IF NOT EXISTS football_games (
   players INT[] NOT NULL,         /* This array consists of the football player ids (basically a foreign key to the football_player.id) */
   PRIMARY KEY(visitor_name, game_date) /* A game's unique primary key consists of the visitor_name & the game date (this assumes you can't have multiple games against the same team in a single day) */
 );
+
+
+
+
 
 DROP TABLE IF EXISTS football_players CASCADE;
 CREATE TABLE IF NOT EXISTS football_players(
