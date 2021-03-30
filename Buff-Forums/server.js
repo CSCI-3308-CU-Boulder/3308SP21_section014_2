@@ -42,17 +42,17 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
 
 
-app.get('/login',function(req,res) {
-    res.render('pages/loginPage', {
-        my_title:"Login Page"
-    });
-});
+// app.get('/login',function(req,res) {
+//     res.render('pages/loginPage', {
+//         my_title:"Login Page"
+//     });
+// });
 
-app.get('/register',function(req,res) {
-    res.render('pages/registerPage', {
-        my_title:"Register"
-    })
-})
+// app.get('/register',function(req,res) {
+//     res.render('pages/registerPage', {
+//         my_title:"Register"
+//     })
+// })
 
 /*
 // login page
@@ -74,10 +74,11 @@ app.get('/register', function(req, res) {
 
 
 app.get('/home', function(req, res) {
-	var query = 'select * from ';
+	var query = '';
 	db.any(query)
         .then(function (rows) {
             res.render('pages/homePage',{
+				local_css:"pages/homepage.css",
 				my_title: "Home Page",
 				data: rows,
 				color: '',
@@ -89,6 +90,7 @@ app.get('/home', function(req, res) {
             console.log('error', err);
             res.render('pages/homePage', {
                 my_title: 'Home Page',
+				local_css:"pages/homepage.css",
                 data: '',
                 color: '',
                 color_msg: ''
