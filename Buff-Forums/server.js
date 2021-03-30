@@ -42,7 +42,17 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
 
 
+app.get('/login',function(req,res) {
+    res.render('pages/loginPage', {
+        my_title:"Login Page"
+    });
+});
 
+app.get('/register',function(req,res) {
+    res.render('pages/registerPage', {
+        my_title:"Register"
+    })
+})
 
 /*
 // login page
@@ -62,30 +72,6 @@ app.get('/register', function(req, res) {
 
 /*Add your other get/post request handlers below here: */
 
-/*
-app.get('/home', function(req, res) {
-	var query = 'select * from favorite_colors;';
-	db.any(query)
-        .then(function (rows) {
-            res.render('pages/home',{
-				my_title: "Home Page",
-				data: rows,
-				color: '',
-				color_msg: ''
-			})
-
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/home', {
-                my_title: 'Home Page',
-                data: '',
-                color: '',
-                color_msg: ''
-            })
-        })
-});
-*/
 
 app.listen(3000);
 console.log('3000 is the magic port');
