@@ -2,6 +2,10 @@ To start Application:
 
 $ docker-compose up
 
+To view Application:
+
+Go to localhost:3000 in browser
+
 To close Application:
 
 $ docker-compose down
