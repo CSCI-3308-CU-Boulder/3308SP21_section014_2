@@ -90,22 +90,18 @@ app.post('/login/submit',function(req,res) {
 
 
 app.get('/home', function(req, res) {
-	var query = '';
+	var query = 'select * from posts;';
 	db.any(query)
-        .then(function (rows) {
+        .then(function (posts) {
+			console.log(posts);
             res.render('pages/homePage',{
-				data: rows,
-				color: '',
-				color_msg: ''
+				data: posts,
 			})
-
         })
         .catch(function (err) {
             console.log('error', err);
             res.render('pages/homePage', {
-                data: '',
-                color: '',
-                color_msg: ''
+
             })
         })
 });

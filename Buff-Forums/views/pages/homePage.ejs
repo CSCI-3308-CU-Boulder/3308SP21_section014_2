@@ -3,6 +3,8 @@
 <head>
   <%- include('../partials/setup.ejs') %>
   <link rel="stylesheet" href="/views/pages/homepage.css">
+  <script src="../../resources/js/voting.js"></script>
+  <title>Buff Forums Home</title>
 </head>
 <body>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -42,7 +44,31 @@
     </div>
     
     <div class="main">
-      <h2>Main Page Content</h2>
+      <div class="postList">
+        <% data.forEach(function(item){ %>
+          <div id="wrapper">
+            <table id="postContent">
+                <tr>
+                    <td id="votingOp"><div>
+                        <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
+                        <p id="voteNum" >0</p>
+                        <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
+                    </div></td>
+                    
+                    <th>
+                        Title <!-- Post content should be in here somewhere. These table entries and positions are just tests.-->
+                    </th>
+                    <td>
+                        test2
+                    </td>
+                </tr>
+                
+            </table>
+        </div>
+
+      <% }); %>
+
+      </div>
     </div>  
     
 
