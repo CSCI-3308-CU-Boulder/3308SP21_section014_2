@@ -1,16 +1,10 @@
 <!-- Page for Registration -->
-<!-- Dylan Kriegman March 31, 2021-->
+<!-- Dylan Kriegman March 30, 2021-->
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <!-- Bootstrap CSS from Bootstrap CDN-->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="./forms.css">
-
+        <%- include('../partials/setup.ejs') %>    
         <title>Registration</title>
     </head>
     
@@ -18,14 +12,14 @@
     <body>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark" id="register-navbar">
             <a class="navbar-brand">
-                <span class="navbar-text" href="./registerPage">
+                <span class="navbar-text">
                     Buff Forums
                 </span>
                
             </a>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                <a class="nav-link" href="./registerPage.html">Registration</a>
+                <a class="nav-link" href="/register">Registration</a>
                 </li>
             </ul>
         </nav>
@@ -94,7 +88,8 @@
 
                     <button type="Submit" class="btn btn-primary">Submit</button>
                     <small class="form-text text-muted">
-                        <a href="./loginPage.html">
+                        
+                        <a href='/login'>
                             Already have an account?
                         </href>
                     </small>
@@ -138,8 +133,6 @@
                             //modify error message for user name with whitespace
                             if(containsWhiteSpace) {
                                 document.getElementById("invalidUserNameFeedback").innerHTML="Sorry, user name's cannot contain whitespace"
-                                
-
                             }
 
                             //check if password is storng
@@ -172,22 +165,33 @@
                             else {
                                 event.preventDefault();
                                 //redirects user to login page if validation passes
+                                //send post request to server using jquery
+                                
+                                var reqUrl=window.location.href + "/create"
+                                console.log(reqUrl);
+                                $.post(reqUrl,{newUsername:userNameInput,newPassword:passwordInput})
+                                 //successful get request - redirect based on feedback 
+                                .done(function(data) {
+                                    const registrationWorked=data.registrationWorked;
+                                    
+                                    //sucessful registation - redirect to login
+                                    if(registrationWorked===true) {
+                                        window.location.pathname='login';
+                                        alert(`Welcome to Buff Forums ${userNameInput}!\n Redirecting to login Page!`);
+                                    }
+                                    //failed registation - display error
+                                    else {
+                                        console.log("Registration failed");
+                                    }
+                                });
+                                
                                 console.log("redirecting user to loginPage");
-                                window.location.replace("/html/loginPage.html")
-
                             }
-
                             form.classList.add('was-validated');
                         }, false);
                         });
                     }, false);
-                
 
-          
-
-                    
-
-                    
            
                 </script>
                 
@@ -196,8 +200,9 @@
 
         </div>
         <!-- Bootstrap JavaScript Dependencies -->
-        <!-- jQuery, Popper.js, and Boostrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <!-- jQuery, Popper.js, and Bootstrap JS -->
+        
+        <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
