@@ -63,7 +63,7 @@ app.post('/register/create',function(req,res) {
 });
 
 app.get('/login',function(req,res) {
-	res.render('pages/loginPage');
+	res.render('pages/loginPage.ejs');
 });
 
 app.post('/login/submit',function(req,res) {
@@ -103,6 +103,69 @@ app.get('/home', function(req, res) {
         .catch(function (err) {
             console.log('error', err);
             res.render('pages/homePage', {
+                data: '',
+                color: '',
+                color_msg: ''
+            })
+        })
+});
+
+app.get('/postview', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/postDetailed.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/postDetailed.ejs', {
+                data: '',
+                color: '',
+                color_msg: ''
+            })
+        })
+});
+
+app.get('/createPost', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/createPost.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/createPost.ejs', {
+                data: '',
+                color: '',
+                color_msg: ''
+            })
+        })
+});
+
+app.get('/register', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/registerPage.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/createPost.ejs', {
                 data: '',
                 color: '',
                 color_msg: ''

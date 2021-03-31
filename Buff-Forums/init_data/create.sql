@@ -14,3 +14,9 @@ CREATE TABLE IF NOT EXISTS logins (
   username VARCHAR(50) NOT NULL PRIMARY KEY DEFAULT 'default-username',
   pwd VARCHAR(50) NOT NULL DEFAULT 'default-password'
 );
+
+DROP TABLE IF EXISTS subforums CASCADE;
+CREATE TABLE IF NOT EXISTS subforums (
+  subform_name VARCHAR(50) NOT NULL PRIMARY KEY DEFAULT 'default-subreddit',
+  subform_url VARCHAR(200) NOT NULL DEFAULT '/default'
+);
