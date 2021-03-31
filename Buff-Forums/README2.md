@@ -1,7 +1,7 @@
-To start Application:
+To start Buff Forums on Port 3000:
 1. "docker-compose up" 
 
-To close Application:
+To close Buff Forums:
 2. "docker-compose down"
 
 If you want to run create.sql and insert.sql and test database setup on initialization. The database needs to be deleted after the container has been removed.
