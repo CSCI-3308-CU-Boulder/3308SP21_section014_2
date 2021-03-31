@@ -45,6 +45,10 @@ body {
     font-size: 28px; 
     padding: 0px 10px;
   }
+
+  .postList{
+    background-color: rgb(133, 133, 133);
+  }
   
   /* @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
