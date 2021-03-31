@@ -63,7 +63,7 @@ app.post('/register/create',function(req,res) {
 });
 
 app.get('/login',function(req,res) {
-	res.render('pages/loginPage');
+	res.render('pages/loginPage.ejs');
 });
 
 app.post('/login/submit',function(req,res) {
@@ -88,6 +88,24 @@ app.post('/login/submit',function(req,res) {
 	});
 });
 
+app.post('/createPost/create',function(req,res) { 
+const id=req.body.id; 
+const title=req.body.title; 
+const username=req.body.username; 
+const creatorname=req.body.creatorname; 
+const vote_amount=req.body.vote_amount; 
+const comments=req.body.comments; 
+const link=req.body.link; 
+const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
+db.any(query)
+.then(function(info) {
+	console.log('Post Creation Successful');
+	res.send({createWorked:true});
+})
+.catch(function(err) {
+	console.log(`Post Creation Error:\n ${err}`);
+	res.send({createWorked:false});
+});
 
 app.get('/home', function(req, res) {
 	var query = 'select * from posts;';
@@ -102,6 +120,69 @@ app.get('/home', function(req, res) {
             console.log('error', err);
             res.render('pages/homePage', {
 
+            })
+        })
+});
+
+app.get('/postview', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/postDetailed.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/postDetailed.ejs', {
+                data: '',
+                color: '',
+                color_msg: ''
+            })
+        })
+});
+
+app.get('/createPost', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/createPost.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/createPost.ejs', {
+                data: '',
+                color: '',
+                color_msg: ''
+            })
+        })
+});
+
+app.get('/register', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/registerPage.ejs',{
+				data: rows,
+				color: '',
+				color_msg: ''
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/createPost.ejs', {
+                data: '',
+                color: '',
+                color_msg: ''
             })
         })
 });
