@@ -43,6 +43,10 @@ app.use(express.static(__dirname));
 
 /*Add your get/post request handlers below here: */
 
+app.get('/',function(req,res) {
+	res.redirect('/login');
+});
+
 app.get('/register',function(req,res) {
 	res.render('pages/registerPage');
 });
@@ -63,7 +67,7 @@ app.post('/register/create',function(req,res) {
 });
 
 app.get('/login',function(req,res) {
-	res.render('pages/loginPage.ejs');
+	res.render('pages/loginPage');
 });
 
 app.post('/login/submit',function(req,res) {
@@ -89,39 +93,78 @@ app.post('/login/submit',function(req,res) {
 });
 
 app.post('/createPost/create',function(req,res) { 
-const id=req.body.id; 
-const title=req.body.title; 
-const username=req.body.username; 
-const creatorname=req.body.creatorname; 
-const vote_amount=req.body.vote_amount; 
-const comments=req.body.comments; 
-const link=req.body.link; 
-const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
-db.any(query)
-.then(function(info) {
-	console.log('Post Creation Successful');
-	res.send({createWorked:true});
-})
-.catch(function(err) {
-	console.log(`Post Creation Error:\n ${err}`);
-	res.send({createWorked:false});
+	const id=req.body.id; 
+	const title=req.body.title; 
+	const username=req.body.username; 
+	const creatorname=req.body.creatorname; 
+	const vote_amount=req.body.vote_amount; 
+	const comments=req.body.comments; 
+	const link=req.body.link; 
+	const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
+	db.any(query)
+	.then(function(info) {
+		console.log('Post Creation Successful');
+		res.send({createWorked:true});
+	})
+	.catch(function(err) {
+		console.log(`Post Creation Error:\n ${err}`);
+		res.send({createWorked:false});
+	});
+});
+
+app.get('/b/:subForumId?',function(req,res) {
+	const subForumId=req.params.subForumId;
+	const query_1=`select * from posts where subforum_id='${subForumId}';`;
+	const query_2=`select * from subforums where subforum_id='${subForumId}'`;
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		console.log()
+		res.render('pages/subforumPage', {
+			posts:data[0],
+			subForumName:data[1][0].subforum_name,
+			subForumId:data[1][0].subforum_id
+		});
+	})
+	.catch(function(err) {
+		console.log(`Query Error ${err}`);
+		res.render('pages/subforumPage', {
+			posts:[],
+			subForumName:'Subforum Does Not Exist',
+			subForumId:subForumId
+		});
+	});
 });
 
 app.get('/home', function(req, res) {
-	var query = 'select * from posts;';
-	db.any(query)
-        .then(function (posts) {
-			console.log(posts);
-            res.render('pages/homePage',{
-				data: posts,
-			})
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/homePage', {
-
-            })
-        })
+	const query_1='select * from posts;';
+	const query_2='select * from subforums;';
+	
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		//console.log(data[0])
+		//console.log(data[1])
+		res.render('pages/homePage', {
+			posts:data[0],
+			subForums:data[1]
+		});
+	})
+	.catch(function(err) {
+		console.log(`Query Error ${err}`);
+		res.render('pages/homePage', {
+			subForums:[''],
+			posts:[]
+		});
+	});
 });
 
 app.get('/postview', function(req, res) {
@@ -186,7 +229,6 @@ app.get('/register', function(req, res) {
             })
         })
 });
-
 
 app.listen(3000);
 console.log('3000 is the magic port');
