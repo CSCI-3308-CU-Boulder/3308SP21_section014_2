@@ -2,7 +2,8 @@ DROP TABLE IF EXISTS posts CASCADE;
 CREATE TABLE IF NOT EXISTS posts (
   post_id INTEGER NOT NULL PRIMARY KEY DEFAULT 1,
   post_title VARCHAR(20) NOT NULL DEFAULT 'default-title',
-  subreddit_name VARCHAR(20) NOT NULL DEFAULT 'default-subreddit',
+  subforum_name VARCHAR(20) NOT NULL DEFAULT 'Default Subforum',
+  subforum_id VARCHAR(20) NOT NULL DEFAULT 'default-subforum',
   post_creator_name VARCHAR(30) NOT NULL DEFAULT 'default-username',
   vote_amount SMALLINT NOT NULL DEFAULT 1,
   comments JSONB,
@@ -17,6 +18,7 @@ CREATE TABLE IF NOT EXISTS logins (
 
 DROP TABLE IF EXISTS subforums CASCADE;
 CREATE TABLE IF NOT EXISTS subforums (
-  subform_name VARCHAR(50) NOT NULL PRIMARY KEY DEFAULT 'default-subreddit',
-  subform_url VARCHAR(200) NOT NULL DEFAULT '/default'
+  subforum_id VARCHAR(50) NOT NULL PRIMARY KEY DEFAULT 'default-subforum',
+  subforum_name VARCHAR(50) NOT NULL DEFAULT 'Default Subforum',
+  subforum_url VARCHAR(200) NOT NULL DEFAULT '/default-subforum'
 );
