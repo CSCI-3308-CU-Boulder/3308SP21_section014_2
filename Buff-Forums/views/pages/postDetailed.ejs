@@ -41,6 +41,12 @@
         <link href="../resources/css/my_style.css" rel="stylesheet">
         <link rel="stylesheet" href="/views/pages/homepage.css">
         <style type="text/css">
+            #postAuthor {
+                margin: auto;
+                width: 75%;
+                padding-left: 50px;
+                font-size: 10px;
+            }
             #postInfo {
                 margin: auto;
                 width: 75%;
@@ -80,8 +86,14 @@
             .commentOptions {
                 font-style: italic;
             }
-        </style>
 
+            /* Comment Indent */
+            hr.indent{ 
+                width: 50px;
+                margin-left:0px;
+            } 
+        </style>
+      <title><%= post.post_link %></title>
 </head>
 
 <body>
@@ -114,40 +126,98 @@
     <!--Post information-->
     <br><br><br>
     <div class="jumbotron" id="postInfo">
-        <h4 id="postTitle">Epic Picture I Took of the Flatirons This Weekend!!</h4>
-        <hr>
-        <div class="text-center">
-            <!--post-->
-            <div id="post"><img src="../images/flatirons.jpg"></div>
-            <hr>
-            <!--post description-->
-            <div class="border-dark" id="postdescription">This is a post about CU with an image and description for more
-                options when posting.</div>
-        </div>
+        <%  var postContent = '';
+            if(post){
+                var author = `<p id="postAuthor">${post.Author}</p>`;
+                var title = `<h4 id="postTitle">${post.Title}</h4>`;
+                var content = `<div class="border-dark" id="post">${post.Content}</div>`;
+
+                postContent = `${author}<br>${title}<br><br><hr>${content}`;
+            }
+        %>
+
+        <%- postContent %>
+        <% } %>
     </div>
+
 
     <!--Comments-->
     <br>
     <div class="jumbotron" id="postComments">
         <div class="text-center" id="comments">
+            <table id="commentTable" style="table-layout: fixed;">
+                <%  var commentRow = '';
+                    var replyID = 0; <!-- Creates a new ID for every reply button so that the makeReplyBox function appends the reply form to the correct location -->
+                    posts.every(function(item){
+                        replyID++;
+                        <!--HTML for up/down voting-->
+                        var voting = `<td id="votingOp"><div>
+                        <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
+                        <p id="voteNum" >0</p>
+                        <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
+                        </div></td>`;
 
+                        commentRow = `<tr> ${voting}`; <!--Adds voting to row-->
+
+
+                        <!--Adds indents for number of parent comments(Does not work!)-->
+                        var indent = ``;
+                        var temp = item.parent;
+                        if(temp.parent)
+                        {
+                            indent+='<hr class="indent">';
+                            <!-- temp = ''; -->
+                        }
+
+                        <!-- Gets info from get request and stores in p tags -->
+                        var title = `<p class="title">${item.Title}<p>`;
+                        var comment = `<p class="comment">${item.Content}</p>`;
+                        var author = `<p class="author">Posted by ${item.Author}</p>`;
+                        
+                        <!-- Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
+                        var reply = `<a id='${replyID}' onclick="makeReplyBox(this.id)" href="#">Reply</a>`;
+
+                        commentRow += `<td>${title}<br>${comment}<br>${author}<br>${reply}</td>`; <!--Adds comments info to row-->
+                        
+                        commentRow =+ `</tr>`; <!--Ends row-->
+                %>
+                  
+                    <-% commentRow %>
+                <%    return true;
+                    });
+                %>
+              </table>
         </div>
     </div>
 
 
-    <!--Create a comment-->
+    <!--Create a new comment-->
     <div class="container">
         <p></p>
+        <!--Shows comment box-->
         <a class="btn btn-primary mx-auto d-block" data-toggle="collapse" href="#commentButton" role="button"
             aria-expanded="false" aria-controls="commentButton">
-            Create Comment
+            Comment on Post
         </a>
         <div class="collapse" id="commentButton">
             <div class="form">
-                <label for="comment">Comment:</label>
-                <textarea type="text" class="form-control" id="comment"></textarea>
-                <button id="submitComment" class="btn btn-primary mx-auto d-block"
-                    onclick="postComment()">Submit</button>
+                <form id="comment_on_post_form" action="/postview/comment" method="POST">
+                    <!--Field for comment text-->
+                    <label for="comment">Comment:</label>
+                    <input type="text" id="comment_on_post_comment" name="comment_on_post_comment" placeholder="">
+                    
+                    <!--Hidden fields for post id and author.
+                        Sets post_id using post variable from above
+                        Sets post_author using cookie-->
+                    <input type='hidden' id= 'comment_on_post_id' name='comment_on_post_id' value=''/>
+                    <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value='' />
+                    <%  document.getElementById("comment_on_post_id").value=post.post_id;
+                        document.getElementById("comment_on_post_author").value=getCookie("username");
+                    %>
+
+                    <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
+                    <input type="submit" value="Submit">
+                </form>
             </div>
         </div>
     </div>

@@ -81,6 +81,9 @@ app.post('/login/submit',function(req,res) {
 		if(validLogin) {
 			console.log("Valid Login");
 			res.send({validLogin:true});
+
+			// Creates a cookie from a function in the ../../resources/js/cookies.js file
+			setCookie('username', userNameInput, 1);
 		}
 		else {
 			console.log("Invalid Login");
@@ -140,9 +143,10 @@ app.get('/b/:subForumId?',function(req,res) {
 	});
 });
 
+// View Homepage from homePage.ejs
 app.get('/home', function(req, res) {
-	const query_1='select * from posts;';
-	const query_2='select * from subforums;';
+	const query_1='select * from posts;'; // gets every post
+	const query_2='select * from subforums;'; // gets every subforum
 	
 	db.task('get-everything',function(task) {
 		return task.batch([
@@ -154,8 +158,8 @@ app.get('/home', function(req, res) {
 		//console.log(data[0])
 		//console.log(data[1])
 		res.render('pages/homePage', {
-			posts:data[0],
-			subForums:data[1]
+			posts:data[0], 		// posts
+			subForums:data[1]	// subforums
 		});
 	})
 	.catch(function(err) {
@@ -167,26 +171,82 @@ app.get('/home', function(req, res) {
 	});
 });
 
-app.get('/postview', function(req, res) {
-	var query = '';
-	db.any(query)
-        .then(function (rows) {
-            res.render('pages/postDetailed.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
-			})
+// View a specific post with id 'postID' from postDetailed.ejs
+app.get('/postview/:postID?', function(req, res) {
+	var postID = req.query.postID;	// gets postID from URL
+	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
+	var query_2 = `select * from comments where Post='${postID}'`; // gets comments on post
 
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/postDetailed.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
-            })
-        })
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		//console.log(data[0])
+		//console.log(data[1])
+		res.render('pages/postDetailed.ejs', {
+			post:data[0], //post
+			comments:data[1] //comments
+		});
+	})
+	.catch(function(err) {
+		console.log(`Post or comments do not exist ${err}`);
+		res.render('pages/postDetailed.ejs', {
+			post:[''],
+			comments:['']
+		});
+	});
 });
+
+
+// Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
+app.post('/postview/comment', function(req, res){
+	var post = req.params.comment_on_post_id;
+	var author = req.params.comment_on_post_author;
+	var comment = req.params.comment_on_post_comment;
+	
+	var insert_statement = `INSERT INTO comments(Author, Post, Content)
+							VALUES (${author}, ${post}, ${comment});`;
+	var getPost = `select * from posts where post_id='${postID}'`;
+	var getComments = `SELECT * FROM comments where Post='${postID}';`;
+
+	db.task('get-everything', task=> {
+		return task.batch([
+			db.any(insert_statement), // inserts new comment to database
+			db.any(getPost), // gets post again
+			db.any(getComments) // gets updated comments
+		]);
+	})
+	.then(info=> {
+		res.render('pages/postDetailed.ejs', {
+			post:data[1], //post
+			comments:data[2] //comments
+		});
+	})
+	.catch(err=>{
+		res.render('pages/postDetailed.ejs', {
+			post:data[1], //post
+			comments:data[2] //comments
+		});
+	})
+});
+
+// Reply to comment from postDetailed.ejs(not functional)
+app.post('/postview/reply', function(req, res){
+	var post = req.query.postID;
+	var author = req.query.username;
+	var comment = req.body.comment;
+	var parent = req.query.parent;
+	
+	var insert_statement = `INSERT INTO comments(Author, Post, Content, Parent)
+							VALUES (${author}, ${post}, ${comment}, ${parent});`;
+	
+});
+
+
+
 
 app.get('/createPost', function(req, res) {
 	var query = '';

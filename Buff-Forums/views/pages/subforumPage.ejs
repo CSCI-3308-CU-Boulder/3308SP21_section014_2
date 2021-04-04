@@ -7,6 +7,7 @@
   <title><%=subForumName%></title>
 </head>
 <body>
+  <!--Navigation-->
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <ul class="navbar-nav">
       <li class="nav-item active">
@@ -31,34 +32,44 @@
 
   </div>
     
-    <div class="main">
-      <div class="postList">
-        <% posts.forEach(function(item){ %>
-          <div id="wrapper">
-            <table id="postContent">
-                <tr>
-                    <td id="votingOp"><div>
-                        <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
-                        <p id="voteNum" >0</p>
-                        <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
-                    </div></td>
-                    
-                    <th>
-                        Title <!-- Post content should be in here somewhere. These table entries and positions are just tests.-->
-                    </th>
-                    <td>
-                        test2
-                    </td>
-                </tr>
-                
-            </table>
-        </div>
+  <div class="main">
+    <div class="postList">
+        <div id="wrapper">
+          <table id="postContent" style="table-layout: fixed;">
+            <%  var i = 0;
+                var postRow = '';
+                posts.every(function(item){
+                  <!--HTML for up/down voting-->
+                  var voting = `<td id="votingOp"><div>
+                    <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
+                    <p id="voteNum" >0</p>
+                    <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
+                    </div></td>`;
 
-      <% }); %>
+                  postRow = `<tr> ${voting}`; <!--Adds voting to row-->
 
+                  <!-- Gets info from get request and stores in p tags -->
+                  <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
+                  var title = `<p class="title">${item.post_title}<p>`;
+                  var author = `<p class="author">Posted by ${item.post_creator_name}</p>`;
+
+                  postRow += `<td>${title}<br>${author}</td>`; <!--Adds post info to row-->
+                  
+                  postRow =+ `</tr>`; <!--Ends row-->
+            %>
+              
+              <-% postRow %>
+              <%  i++;
+                  <!-- Only shows 50 posts on homepage -->
+                  if(i < 50){return true} 
+                  });
+              %>
+          </table>
       </div>
-    </div>  
-    
+    </div>
+  </div>
+
 
     </body>
+
 </html> 

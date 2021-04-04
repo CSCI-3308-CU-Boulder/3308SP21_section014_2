@@ -26,8 +26,12 @@ CREATE TABLE public."Comments"
     "Post" uuid,
     "Content" character varying(5000) COLLATE pg_catalog."default",
     "Parent" uuid NOT NULL,
-    "ID" uuid NOT NULL,
-    CONSTRAINT pk_comment PRIMARY KEY ("ID"),
+    CONSTRAINT ID PRIMARY KEY ("ID"),
+    CONSTRAINT pk_comment FOREIGN KEY ("ID"),
+	REFERENCES public."Comments" ("ID") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
     CONSTRAINT fk_author FOREIGN KEY ("Author")
         REFERENCES public."Users" ("Username") MATCH SIMPLE
         ON UPDATE NO ACTION
