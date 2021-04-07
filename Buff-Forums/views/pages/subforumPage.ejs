@@ -1,5 +1,20 @@
 <!DOCTYPE html>
 <html>
+
+<script>
+    function getCookie(name) {
+    var cookieArr = document.cookie.split(";");
+    for(var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+        if(name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }    
+    return null;    // Return null if not found
+    }
+    
+</script>
+
 <head>
   <%- include('../partials/setup.ejs') %>
   <link rel="stylesheet" href="/views/pages/homepage.css">
@@ -18,8 +33,22 @@
             <a class="nav-link " href="/createPost">Create Post</a>
         </li>
       </ul>
+      <ul class="navbar-nav ml-auto" id = "navigation">
+
+      </ul>
     </nav>
-  
+  <script>
+      var nav = document.getElementById("navigation");
+      var newli = document.createElement("LI");
+      var newa = document.createElement("a");
+      newli.setAttribute('class', 'nav-item');
+      newa.setAttribute('class', 'navbar-text');
+      newa.style.color = 'white';
+      var textnode = document.createTextNode("Hello " + getCookie("username"));
+      nav.appendChild(newli);
+      newli.appendChild(newa);
+      newa.appendChild(textnode);
+  </script>
 
   </div>
     
