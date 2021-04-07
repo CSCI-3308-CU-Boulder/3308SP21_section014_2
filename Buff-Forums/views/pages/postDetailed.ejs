@@ -111,6 +111,10 @@
                 width: 50px;
                 margin-left:0px;
             } 
+
+            div, p, span{
+                text-align: left;
+            }
         </style>
       <title><%= post.post_id %></title>
 </head>
@@ -145,11 +149,12 @@
     <!--Post information-->
     <br><br><br>
     <div class="jumbotron" id="postInfo">
-        <%  var postContent = ''; console.log('post:',post);
+        <%  var postContent = ''; ;
             if(post){
-                var author = `<p id="postAuthor">${post.author}</p>`;
-                var title = `<h4 id="postTitle">${post.title}</h4>`;
-                var content = `<div class="border-dark" id="post">${post.content}</div>`;
+                console.log('post:',post)
+                var author = `<p id="postAuthor">${post.post_creator_name}</p>`;
+                var title = `<h4 id="postTitle">${post.post_title}</h4>`;
+                var content = `<div class="border-dark" id="postContent">${post.post_text_content}</div>`;
 
                 postContent = `${author}<br>${title}<br><br><hr>${content}`;
             
@@ -170,38 +175,31 @@
                     comments.every(function(item){
                         replyID++;
                         <!--HTML for up/down voting-->
-                        var voting = `<td id="votingOp"><div>
-                        <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
-                        <p id="voteNum" >0</p>
-                        <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
-                        </div></td>`;
+                        var voting = '<td id="votingOp"><div>'+
+                            '<input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />'+
+                            '<span id="voteNum" >'+item.vote_amount+'</span>'+
+                            '<input type="image" src="../../resources/images/downvote" id="vote" onclick="vote(-1)" />'+
+                            '</div></td>';
 
                         commentRow = `<tr> ${voting}`; <!--Adds voting to row-->
 
-
                         <!--Adds indents for number of parent comments(Does not work!)-->
-                        var indent = ``;
-                        var temp = item.parent;
-                        if(temp.parent)
-                        {
-                            indent+='<hr class="indent">';
-                            <!-- temp = ''; -->
-                        }
+                        
 
                         <!-- Gets info from get request and stores in p tags -->
-                        var title = `<p class="title">${item.Title}<p>`;
-                        var comment = `<p class="comment">${item.Content}</p>`;
-                        var author = `<p class="author">Posted by ${item.Author}</p>`;
+                        var comment = `<span class="comment">${item.content}</span>`;
+                        var author = `<span class="author">Posted by ${item.author}</span>`;
                         
                         <!-- Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
                         var reply = `<a id='${replyID}' onclick="makeReplyBox(this.id)" href="#">Reply</a>`;
 
-                        commentRow += `<td>${title}<br>${comment}<br>${author}<br>${reply}</td>`; <!--Adds comments info to row-->
+                        commentRow += `<td>${comment}<br>${author}<br>${reply}</td>`; <!--Adds comments info to row-->
                         
-                        commentRow =+ `</tr>`; <!--Ends row-->
+                        commentRow += `</tr>`; <!--Ends row-->
+
                 %>
                   
-                    <-% commentRow %>
+                    <%- commentRow %>
                 <%    return true;
                     });
                 %>

@@ -182,7 +182,6 @@ app.put('/home/', function(req, res){
 
 // View a specific post with id 'postID' from postDetailed.ejs
 app.get('/postview/:postID', function(req, res) {
-	console.log("postview:", req.params);
 	var postID = req.params.postID;	// gets postID from URL
 	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
 	var query_2 = `select * from comments where post='${postID}'`; // gets comments on post
@@ -194,7 +193,7 @@ app.get('/postview/:postID', function(req, res) {
 		]);
 	})
 	.then(function(data) {
-		//console.log(data[0])
+		//console.log(data[0][0])
 		//console.log(data[1])
 		res.render('pages/postDetailed.ejs', {
 			post:data[0][0], //post
@@ -213,12 +212,12 @@ app.get('/postview/:postID', function(req, res) {
 
 // Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
 app.post('/postview/comment', function(req, res){
-	var post = req.params.comment_on_post_id;
-	var author = req.params.comment_on_post_author;
-	var comment = req.params.comment_on_post_comment;
+	var postID = req.body.comment_on_post_id;
+	var author = req.body.comment_on_post_author;
+	var comment = req.body.comment_on_post_comment;
 	
 	var insert_statement = `INSERT INTO comments(author, post, content)
-							VALUES (${author}, ${post}, ${comment});`;
+							VALUES (${author}, ${postID}, ${comment});`;
 	var getPost = `select * from posts where post_id='${postID}'`;
 	var getComments = `SELECT * FROM comments where post='${postID}';`;
 
@@ -231,14 +230,14 @@ app.post('/postview/comment', function(req, res){
 	})
 	.then(info=> {
 		res.render('pages/postDetailed.ejs', {
-			post:data[1], //post
-			comments:data[2] //comments
+			post:info[1], //post
+			comments:info[2] //comments
 		});
 	})
 	.catch(err=>{
 		res.render('pages/postDetailed.ejs', {
-			post:data[1], //post
-			comments:data[2] //comments
+			post:info[1], //post
+			comments:info[2] //comments
 		});
 	})
 });

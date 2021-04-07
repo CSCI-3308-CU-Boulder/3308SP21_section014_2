@@ -35,8 +35,9 @@ CREATE TABLE IF NOT EXISTS comments (
    "author" VARCHAR(50) NOT NULL DEFAULT 'default-author',
     "post" uuid NOT NULL,
     "content" character varying(5000) NOT NULL DEFAULT 'default-content',
-    "parent" uuid NOT NULL,
+    "parent" uuid,
     "id" uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    "vote_amount" SMALLINT NOT NULL DEFAULT 1,
     CONSTRAINT fk_author FOREIGN KEY ("author")
         REFERENCES public."logins" ("username") MATCH SIMPLE
         ON UPDATE NO ACTION
