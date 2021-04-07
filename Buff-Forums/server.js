@@ -181,11 +181,11 @@ app.put('/home/', function(req, res){
 });
 
 // View a specific post with id 'postID' from postDetailed.ejs
-app.get('/postview/:postID?', function(req, res) {
-	console.log("postview:", req.query);
-	var postID = req.query.postID;	// gets postID from URL
+app.get('/postview/:postID', function(req, res) {
+	console.log("postview:", req.params);
+	var postID = req.params.postID;	// gets postID from URL
 	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
-	var query_2 = `select * from comments where Post='${postID}'`; // gets comments on post
+	var query_2 = `select * from comments where post='${postID}'`; // gets comments on post
 
 	db.task('get-everything',function(task) {
 		return task.batch([
@@ -197,7 +197,7 @@ app.get('/postview/:postID?', function(req, res) {
 		//console.log(data[0])
 		//console.log(data[1])
 		res.render('pages/postDetailed.ejs', {
-			post:data[0], //post
+			post:data[0][0], //post
 			comments:data[1] //comments
 		});
 	})
@@ -217,10 +217,10 @@ app.post('/postview/comment', function(req, res){
 	var author = req.params.comment_on_post_author;
 	var comment = req.params.comment_on_post_comment;
 	
-	var insert_statement = `INSERT INTO comments(Author, Post, Content)
+	var insert_statement = `INSERT INTO comments(author, post, content)
 							VALUES (${author}, ${post}, ${comment});`;
 	var getPost = `select * from posts where post_id='${postID}'`;
-	var getComments = `SELECT * FROM comments where Post='${postID}';`;
+	var getComments = `SELECT * FROM comments where post='${postID}';`;
 
 	db.task('get-everything', task=> {
 		return task.batch([
@@ -250,7 +250,7 @@ app.post('/postview/reply', function(req, res){
 	var comment = req.body.comment;
 	var parent = req.query.parent;
 	
-	var insert_statement = `INSERT INTO comments(Author, Post, Content, Parent)
+	var insert_statement = `INSERT INTO comments(author, post, content, parent)
 							VALUES (${author}, ${post}, ${comment}, ${parent});`;
 	
 });
