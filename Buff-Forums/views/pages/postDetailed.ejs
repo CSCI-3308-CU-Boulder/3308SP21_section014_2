@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    <!-- Unnecessary? -->
 <script>
     function postComment() {
         if(document.getElementById("comment").value == "")
@@ -29,13 +30,31 @@
         post.appendChild(deleteB);
         document.getElementById("comment").value = "";
     }
+    function getCookie(name) {
+    // Split cookie string and get all individual name=value pairs in an array
+    var cookieArr = document.cookie.split(";");
+    
+    // Loop through the array elements
+    for(var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+        
+        /* Removing whitespace at the beginning of the cookie name
+        and compare it with the given string */
+        if(name == cookiePair[0].trim()) {
+            // Decode the cookie value and return
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    
+    // Return null if not found
+    return null;
+}
 </script>
 
 <head>
     <%- include('../partials/setup.ejs') %>
     
     <meta name="description" content="">
-    <title>2020 Player Info</title>
     <link rel='icon' href='../resources/img/favicon.ico' type='image/x-icon' />
     
         <link href="../resources/css/my_style.css" rel="stylesheet">
@@ -93,7 +112,7 @@
                 margin-left:0px;
             } 
         </style>
-      <title><%= post.post_link %></title>
+      <title><%= post.post_id %></title>
 </head>
 
 <body>
@@ -126,14 +145,14 @@
     <!--Post information-->
     <br><br><br>
     <div class="jumbotron" id="postInfo">
-        <%  var postContent = '';
+        <%  var postContent = ''; console.log('post:',post);
             if(post){
-                var author = `<p id="postAuthor">${post.Author}</p>`;
-                var title = `<h4 id="postTitle">${post.Title}</h4>`;
-                var content = `<div class="border-dark" id="post">${post.Content}</div>`;
+                var author = `<p id="postAuthor">${post.author}</p>`;
+                var title = `<h4 id="postTitle">${post.title}</h4>`;
+                var content = `<div class="border-dark" id="post">${post.content}</div>`;
 
                 postContent = `${author}<br>${title}<br><br><hr>${content}`;
-            }
+            
         %>
 
         <%- postContent %>
@@ -148,7 +167,7 @@
             <table id="commentTable" style="table-layout: fixed;">
                 <%  var commentRow = '';
                     var replyID = 0; <!-- Creates a new ID for every reply button so that the makeReplyBox function appends the reply form to the correct location -->
-                    posts.every(function(item){
+                    comments.every(function(item){
                         replyID++;
                         <!--HTML for up/down voting-->
                         var voting = `<td id="votingOp"><div>
@@ -211,9 +230,6 @@
                         Sets post_author using cookie-->
                     <input type='hidden' id= 'comment_on_post_id' name='comment_on_post_id' value=''/>
                     <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value='' />
-                    <%  document.getElementById("comment_on_post_id").value=post.post_id;
-                        document.getElementById("comment_on_post_author").value=getCookie("username");
-                    %>
 
                     <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
                     <input type="submit" value="Submit">
@@ -224,5 +240,10 @@
 
     <br>
 </body>
+<!-- Sets values of hidden fields from post_id and cookie-->
+<script>
+    document.getElementById("comment_on_post_id").value=post.post_id;
+    document.getElementById("comment_on_post_author").value=getCookie("username");
+</script>
 
 </html>

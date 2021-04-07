@@ -32,22 +32,22 @@ CREATE TABLE IF NOT EXISTS posts (
 
 DROP TABLE IF EXISTS comments CASCADE;
 CREATE TABLE IF NOT EXISTS comments (
-   "Author" VARCHAR(50) NOT NULL DEFAULT 'default-author',
-    "Post" uuid NOT NULL DEFAULT gen_random_uuid(),
-    "Content" character varying(5000) NOT NULL DEFAULT 'default-content',
-    "Parent" uuid NOT NULL,
-    "ID" uuid NOT NULL PRIMARY KEY,
-    CONSTRAINT fk_author FOREIGN KEY ("Author")
+   "author" VARCHAR(50) NOT NULL DEFAULT 'default-author',
+    "post" uuid NOT NULL,
+    "content" character varying(5000) NOT NULL DEFAULT 'default-content',
+    "parent" uuid NOT NULL,
+    "id" uuid NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+    CONSTRAINT fk_author FOREIGN KEY ("author")
         REFERENCES public."logins" ("username") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID,
-    CONSTRAINT fk_parent FOREIGN KEY ("Parent")
-        REFERENCES public."comments" ("ID") MATCH SIMPLE
+    CONSTRAINT fk_parent FOREIGN KEY ("parent")
+        REFERENCES public."comments" ("id") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID,
-    CONSTRAINT pk_post FOREIGN KEY ("Post")
+    CONSTRAINT pk_post FOREIGN KEY ("post")
         REFERENCES public."posts" ("post_id") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION

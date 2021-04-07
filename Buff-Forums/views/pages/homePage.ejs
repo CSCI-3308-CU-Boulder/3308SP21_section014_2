@@ -70,7 +70,7 @@
                     var author = '<span class="author">Posted by '+item.post_creator_name+'</span>';
 
                     <!-- Links the row to its appropriate post link -->
-                    postRow += `<td class="postInfo"><a href="/postview/postID=${item.post_id}?">${title+author}</td>`; <!--Adds post info to row-->
+                    postRow += `<td class="postInfo"><a href="/postview/${item.post_id}">${title+author}</td>`; <!--Adds post info to row-->
                     
                     postRow += '</a></tr>'; <!--Ends row-->
               %>
