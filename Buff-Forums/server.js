@@ -43,6 +43,10 @@ app.use(express.static(__dirname));
 
 /*Add your get/post request handlers below here: */
 
+app.get('/',function(req,res) {
+	res.redirect('/login');
+});
+
 app.get('/register',function(req,res) {
 	res.render('pages/registerPage');
 });
@@ -63,7 +67,7 @@ app.post('/register/create',function(req,res) {
 });
 
 app.get('/login',function(req,res) {
-	res.render('pages/loginPage.ejs');
+	res.render('pages/loginPage');
 });
 
 app.post('/login/submit',function(req,res) {
@@ -77,6 +81,9 @@ app.post('/login/submit',function(req,res) {
 		if(validLogin) {
 			console.log("Valid Login");
 			res.send({validLogin:true});
+
+			// Creates a cookie from a function in the ../../resources/js/cookies.js file
+			setCookie('username', userNameInput, 1);
 		}
 		else {
 			console.log("Invalid Login");
@@ -89,61 +96,157 @@ app.post('/login/submit',function(req,res) {
 });
 
 app.post('/createPost/create',function(req,res) { 
-const id=req.body.id; 
-const title=req.body.title; 
-const username=req.body.username; 
-const creatorname=req.body.creatorname; 
-const vote_amount=req.body.vote_amount; 
-const comments=req.body.comments; 
-const link=req.body.link; 
-const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
-db.any(query)
-.then(function(info) {
-	console.log('Post Creation Successful');
-	res.send({createWorked:true});
-})
-.catch(function(err) {
-	console.log(`Post Creation Error:\n ${err}`);
-	res.send({createWorked:false});
+	const id=req.body.id; 
+	const title=req.body.title; 
+	const username=req.body.username; 
+	const creatorname=req.body.creatorname; 
+	const vote_amount=req.body.vote_amount; 
+	const comments=req.body.comments; 
+	const link=req.body.link; 
+	const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
+	db.any(query)
+	.then(function(info) {
+		console.log('Post Creation Successful');
+		res.send({createWorked:true});
+	})
+	.catch(function(err) {
+		console.log(`Post Creation Error:\n ${err}`);
+		res.send({createWorked:false});
+	});
 });
 
+app.get('/b/:subForumId?',function(req,res) {
+	const subForumId=req.params.subForumId;
+	const query_1=`select * from posts where subforum_id='${subForumId}';`;
+	const query_2=`select * from subforums where subforum_id='${subForumId}'`;
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		console.log()
+		res.render('pages/subforumPage', {
+			posts:data[0],
+			subForumName:data[1][0].subforum_name,
+			subForumId:data[1][0].subforum_id
+		});
+	})
+	.catch(function(err) {
+		console.log(`Query Error ${err}`);
+		res.render('pages/subforumPage', {
+			posts:[],
+			subForumName:'Subforum Does Not Exist',
+			subForumId:subForumId
+		});
+	});
+});
+
+// View Homepage from homePage.ejs
 app.get('/home', function(req, res) {
-	var query = 'select * from posts;';
-	db.any(query)
-        .then(function (posts) {
-			console.log(posts);
-            res.render('pages/homePage',{
-				data: posts,
-			})
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/homePage', {
-
-            })
-        })
+	const query_1='select * from posts;'; // gets every post
+	const query_2='select * from subforums;'; // gets every subforum
+	
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		//console.log(data[0])
+		//console.log(data[1])
+		res.render('pages/homePage', {
+			posts:data[0], 		// posts
+			subForums:data[1]	// subforums
+		});
+	})
+	.catch(function(err) {
+		console.log(`Query Error ${err}`);
+		res.render('pages/homePage', {
+			subForums:[''],
+			posts:[]
+		});
+	});
 });
 
-app.get('/postview', function(req, res) {
-	var query = '';
-	db.any(query)
-        .then(function (rows) {
-            res.render('pages/postDetailed.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
-			})
+// View a specific post with id 'postID' from postDetailed.ejs
+app.get('/postview/:postID?', function(req, res) {
+	var postID = req.query.postID;	// gets postID from URL
+	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
+	var query_2 = `select * from comments where Post='${postID}'`; // gets comments on post
 
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/postDetailed.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
-            })
-        })
+	db.task('get-everything',function(task) {
+		return task.batch([
+			task.any(query_1),
+			task.any(query_2)
+		]);
+	})
+	.then(function(data) {
+		//console.log(data[0])
+		//console.log(data[1])
+		res.render('pages/postDetailed.ejs', {
+			post:data[0], //post
+			comments:data[1] //comments
+		});
+	})
+	.catch(function(err) {
+		console.log(`Post or comments do not exist ${err}`);
+		res.render('pages/postDetailed.ejs', {
+			post:[''],
+			comments:['']
+		});
+	});
 });
+
+
+// Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
+app.post('/postview/comment', function(req, res){
+	var post = req.params.comment_on_post_id;
+	var author = req.params.comment_on_post_author;
+	var comment = req.params.comment_on_post_comment;
+	
+	var insert_statement = `INSERT INTO comments(Author, Post, Content)
+							VALUES (${author}, ${post}, ${comment});`;
+	var getPost = `select * from posts where post_id='${postID}'`;
+	var getComments = `SELECT * FROM comments where Post='${postID}';`;
+
+	db.task('get-everything', task=> {
+		return task.batch([
+			db.any(insert_statement), // inserts new comment to database
+			db.any(getPost), // gets post again
+			db.any(getComments) // gets updated comments
+		]);
+	})
+	.then(info=> {
+		res.render('pages/postDetailed.ejs', {
+			post:data[1], //post
+			comments:data[2] //comments
+		});
+	})
+	.catch(err=>{
+		res.render('pages/postDetailed.ejs', {
+			post:data[1], //post
+			comments:data[2] //comments
+		});
+	})
+});
+
+// Reply to comment from postDetailed.ejs(not functional)
+app.post('/postview/reply', function(req, res){
+	var post = req.query.postID;
+	var author = req.query.username;
+	var comment = req.body.comment;
+	var parent = req.query.parent;
+	
+	var insert_statement = `INSERT INTO comments(Author, Post, Content, Parent)
+							VALUES (${author}, ${post}, ${comment}, ${parent});`;
+	
+});
+
+
+
 
 app.get('/createPost', function(req, res) {
 	var query = '';
@@ -186,7 +289,6 @@ app.get('/register', function(req, res) {
             })
         })
 });
-
 
 app.listen(3000);
 console.log('3000 is the magic port');
