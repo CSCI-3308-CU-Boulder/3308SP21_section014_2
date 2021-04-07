@@ -5,6 +5,12 @@
   <link rel="stylesheet" href="/views/pages/homepage.css">
   <script src="../../resources/js/voting.js"></script>
   <title>Buff Forums Home</title>
+  <script>
+    function logout() {
+      const username=getCookie('username');
+      alert(`${username} has been logged out.`);
+    }
+  </script>
 </head>
 <body>
   <!--Navigation-->
@@ -17,6 +23,10 @@
       <li class="nav-item">
           <a class="nav-link " href="/createPost">Create Post</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/login" onclick="logout()">Logout</a>
+      </li>
+
     </ul>
   </nav>
   
