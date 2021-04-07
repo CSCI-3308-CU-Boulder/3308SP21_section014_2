@@ -31,38 +31,25 @@
     <div class="container">
         <p></p>
         <h1>Create New Post</h1>
-        <div id="title">
-            <div class="form-group">
-                <label for="comment">Title:</label>
-                <textarea class="form-control" rows="1" id="comment"></textarea>
-            </div>
-        </div>
 
         <div class="details">
-            <div class="textarea-container">
-                <label for="comment">Details:</label>
-                <textarea class="form-control" rows="15" id="comment"></textarea>
 
-                <form action="/action_page.php">
-                  <input type="file" id="myFile" accept="image/*" onchange= "loadFile(event)">
-                  <img id = "output"/>
-                  <script>
-                    var loadFile = function(event) {
-                    var output = document.getElementById('output');
-                    output.src = URL.createObjectURL(event.target.files[0]);
-                    output.onload = function() {
-                      URL.revokeObjectURL(output.src)
-                    }
-                  };
-                  </script>
-                </form>
+          <form id="make_post" action="/createPost/create" method="POST">
+            <div class="form-group">
+              <label for="comment">Title:</label>
+              <textarea class="form-control" rows="1" name="post_title" id="post_title"></textarea>
             </div>
-
+            <div class="textarea-container">
+              <label for="comment">Details:</label>
+              <textarea class="form-control" rows="15" name="post_details" id="post_details"></textarea>
+            </div>
+            <br>
+            <!-- Temp Image submission -->
+            <!-- <input type="file" id="myFile" accept="image/*" onchange= "loadFile(event)">
+            <img id = "output"/> -->
+            <button type="submit" class="btn btn-primary mx-auto d-block">Publish</button>
+          </form>
         </div>
-
-        <p></p>
-        <button type="submit" class="btn btn-primary mx-auto d-block">Publish</button>
-
     </div>
 
 </body>

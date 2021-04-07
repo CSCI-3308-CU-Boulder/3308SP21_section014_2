@@ -41,7 +41,12 @@ var db = pgp(dbConfig);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
 
-/*Add your get/post request handlers below here: */
+// Cookies from express, used to know who is logged in
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
+/*get/post request handlers: */
 
 app.get('/',function(req,res) {
 	res.redirect('/login');
@@ -80,10 +85,8 @@ app.post('/login/submit',function(req,res) {
 		const validLogin=info[0].exists;
 		if(validLogin) {
 			console.log("Valid Login");
+			res.cookie('username', userNameInput).send('username cookie set'); // Sets username cookie using express
 			res.send({validLogin:true});
-
-			// Creates a cookie from a function in the ../../resources/js/cookies.js file
-			setCookie('username', userNameInput, 1);
 		}
 		else {
 			console.log("Invalid Login");
@@ -96,14 +99,15 @@ app.post('/login/submit',function(req,res) {
 });
 
 app.post('/createPost/create',function(req,res) { 
-	const id=req.body.id; 
-	const title=req.body.title; 
-	const username=req.body.username; 
-	const creatorname=req.body.creatorname; 
-	const vote_amount=req.body.vote_amount; 
-	const comments=req.body.comments; 
-	const link=req.body.link; 
-	const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
+	// Gets username from cookies and title/content from the form. The UUID is automatically created when inserted into the database
+	console.log('creating post', req.body);
+	console.log('cookies: ', req.cookies);
+	const title=req.body.post_title; 
+	const username=req.cookies.username;
+	const vote_amount=1;
+	const content=req.body.post_details;
+	// Does not insert into a subforum
+	const query=`INSERT INTO posts(post_title, post_creator_name, post_text_content, vote_amount) VALUES('${title}','${username}','${content}','${vote_amount}');`; 
 	db.any(query)
 	.then(function(info) {
 		console.log('Post Creation Successful');
@@ -171,8 +175,14 @@ app.get('/home', function(req, res) {
 	});
 });
 
+// Voting
+app.put('/home/', function(req, res){
+
+});
+
 // View a specific post with id 'postID' from postDetailed.ejs
 app.get('/postview/:postID?', function(req, res) {
+	console.log("postview:", req.query);
 	var postID = req.query.postID;	// gets postID from URL
 	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
 	var query_2 = `select * from comments where Post='${postID}'`; // gets comments on post
@@ -247,28 +257,25 @@ app.post('/postview/reply', function(req, res){
 
 
 
-
+// Unnecessary?
 app.get('/createPost', function(req, res) {
 	var query = '';
 	db.any(query)
         .then(function (rows) {
             res.render('pages/createPost.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
+				data: rows
 			})
 
         })
         .catch(function (err) {
             console.log('error', err);
             res.render('pages/createPost.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
+                data: ''
             })
         })
 });
 
+//Unnecessary?
 app.get('/register', function(req, res) {
 	var query = '';
 	db.any(query)
