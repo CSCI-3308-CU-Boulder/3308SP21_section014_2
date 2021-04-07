@@ -49,6 +49,7 @@
     // Return null if not found
     return null;
 }
+
 </script>
 
 <head>
@@ -210,6 +211,12 @@
 
     <!--Create a new comment-->
     <div class="container">
+        <% var postID = '';
+            if(post){
+                postID = post.post_id;
+            }
+        %>
+        <%- postID %>
         <p></p>
         <!--Shows comment box-->
         <a class="btn btn-primary mx-auto d-block" data-toggle="collapse" href="#commentButton" role="button"
@@ -226,11 +233,11 @@
                     <!--Hidden fields for post id and author.
                         Sets post_id using post variable from above
                         Sets post_author using cookie-->
-                    <input type='hidden' id= 'comment_on_post_id' name='comment_on_post_id' value=''/>
+                    <input type='hidden' id= 'comment_on_post_id' name='comment_on_post_id' value=''   />
                     <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value='' />
-
+                    
                     <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
-                    <input type="submit" value="Submit">
+                    <input type="submit" value="Submit" onclick="getPostID()">
                 </form>
             </div>
         </div>
@@ -239,9 +246,5 @@
     <br>
 </body>
 <!-- Sets values of hidden fields from post_id and cookie-->
-<script>
-    document.getElementById("comment_on_post_id").value=post.post_id;
-    document.getElementById("comment_on_post_author").value=getCookie("username");
-</script>
 
 </html>
