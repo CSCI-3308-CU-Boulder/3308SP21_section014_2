@@ -259,7 +259,8 @@ app.post('/postview/reply', function(req, res){
 
 // Unnecessary?
 app.get('/createPost', function(req, res) {
-	var query = '';
+	const query='select * from subforums;'
+
 	db.any(query)
         .then(function (rows) {
             res.render('pages/createPost.ejs',{
