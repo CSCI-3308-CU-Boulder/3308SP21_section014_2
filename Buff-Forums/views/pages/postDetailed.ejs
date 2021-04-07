@@ -67,6 +67,10 @@ function makeReplyBox(clickedID)
     url += "&comment="+commentID;
     form.action = url;
 }
+    function logout() {
+        console.log(document.cookie['username']);
+        alert("you have logged out");
+    }
 </script>
 
 <head>
@@ -144,11 +148,16 @@ function makeReplyBox(clickedID)
             }
         </style>
       <title><%= post.post_title %></title>
+      <script>
+        function logout() {
+          const username=getCookie('username');
+          alert(`${username} has been logged out.`);
+        }
+      </script>
 </head>
 
 <body>
-
-      <!--Navigation-->
+    <!--Navigation-->
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <ul class="navbar-nav">
       <li class="nav-item active">
@@ -159,7 +168,7 @@ function makeReplyBox(clickedID)
           <a class="nav-link " href="../createPost">Create Post</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/login">Logout</a>
+        <a class="nav-link" href="/login" onclick="logout()">Logout</a>
       </li>
     </ul>
   </nav>
