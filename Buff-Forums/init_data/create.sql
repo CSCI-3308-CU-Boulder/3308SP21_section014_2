@@ -2,8 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DROP TABLE IF EXISTS subforums CASCADE;
 CREATE TABLE IF NOT EXISTS subforums (
-  subforum_name VARCHAR(50) NOT NULL DEFAULT 'Default Subforum',
-  subforum_url VARCHAR(200) NOT NULL DEFAULT '/default-subforum'
+  subforum_name VARCHAR(50) NOT NULL DEFAULT 'Default Subforum'
 );
 
 

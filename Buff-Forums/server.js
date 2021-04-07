@@ -85,8 +85,9 @@ app.post('/login/submit',function(req,res) {
 		const validLogin=info[0].exists;
 		if(validLogin) {
 			console.log("Valid Login");
-			res.cookie('username', userNameInput).send('username cookie set'); // Sets username cookie using express
-			res.send({validLogin:true});
+			res.cookie('username', userNameInput).send({validLogin:true}); // Sets username cookie using express
+			// res.redirect('/home');
+			// res.send({validLogin:true});
 		}
 		else {
 			console.log("Invalid Login");
@@ -100,18 +101,18 @@ app.post('/login/submit',function(req,res) {
 
 app.post('/createPost/create',function(req,res) { 
 	// Gets username from cookies and title/content from the form. The UUID is automatically created when inserted into the database
-	console.log('creating post', req.body);
-	console.log('cookies: ', req.cookies);
 	const title=req.body.post_title; 
 	const username=req.cookies.username;
 	const vote_amount=1;
 	const content=req.body.post_details;
+	const subforum = req.body.select_subforum; // Assumes subforum exists
 	// Does not insert into a subforum
-	const query=`INSERT INTO posts(post_title, post_creator_name, post_text_content, vote_amount) VALUES('${title}','${username}','${content}','${vote_amount}');`; 
+	const query=`INSERT INTO posts(post_title, subforum_name, post_creator_name, post_text_content, vote_amount) VALUES('${title}', '${subforum}', '${username}','${content}','${vote_amount}');`; 
 	db.any(query)
 	.then(function(info) {
 		console.log('Post Creation Successful');
-		res.send({createWorked:true});
+		res.redirect('/home');
+		// res.send({createWorked:true});
 	})
 	.catch(function(err) {
 		console.log(`Post Creation Error:\n ${err}`);
@@ -119,30 +120,26 @@ app.post('/createPost/create',function(req,res) {
 	});
 });
 
-app.get('/b/:subForumId?',function(req,res) {
-	const subForumId=req.params.subForumId;
-	const query_1=`select * from posts where subforum_id='${subForumId}';`;
-	const query_2=`select * from subforums where subforum_id='${subForumId}'`;
+app.get('/b/:subForum',function(req,res) {
+	const subForum=req.params.subForum;
+	const query_1=`select * from posts where subforum_name='${subForum}';`;
 	db.task('get-everything',function(task) {
 		return task.batch([
 			task.any(query_1),
-			task.any(query_2)
 		]);
 	})
 	.then(function(data) {
 		console.log()
 		res.render('pages/subforumPage', {
 			posts:data[0],
-			subForumName:data[1][0].subforum_name,
-			subForumId:data[1][0].subforum_id
+			subForum: subForum
 		});
 	})
 	.catch(function(err) {
 		console.log(`Query Error ${err}`);
 		res.render('pages/subforumPage', {
-			posts:[],
-			subForumName:'Subforum Does Not Exist',
-			subForumId:subForumId
+			posts:[''],
+			subForum:''
 		});
 	});
 });
@@ -212,87 +209,90 @@ app.get('/postview/:postID', function(req, res) {
 
 // Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
 app.post('/postview/comment', function(req, res){
-	var postID = req.body.comment_on_post_id;
+	var postID = req.query.id;
 	var author = req.body.comment_on_post_author;
 	var comment = req.body.comment_on_post_comment;
 	
 	var insert_statement = `INSERT INTO comments(author, post, content)
-							VALUES (${author}, ${postID}, ${comment});`;
-	var getPost = `select * from posts where post_id='${postID}'`;
-	var getComments = `SELECT * FROM comments where post='${postID}';`;
+							VALUES ('${author}', '${postID}', '${comment}');`;
+
 
 	db.task('get-everything', task=> {
 		return task.batch([
 			db.any(insert_statement), // inserts new comment to database
-			db.any(getPost), // gets post again
-			db.any(getComments) // gets updated comments
 		]);
 	})
 	.then(info=> {
-		res.render('pages/postDetailed.ejs', {
-			post:info[1], //post
-			comments:info[2] //comments
-		});
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
 	})
 	.catch(err=>{
-		res.render('pages/postDetailed.ejs', {
-			post:info[1], //post
-			comments:info[2] //comments
-		});
+		res.redirect('back');
 	})
 });
 
 // Reply to comment from postDetailed.ejs(not functional)
 app.post('/postview/reply', function(req, res){
-	var post = req.query.postID;
-	var author = req.query.username;
-	var comment = req.body.comment;
-	var parent = req.query.parent;
+	var postID = req.query.id;
+	var parent = req.query.comment;
+	var author = req.body.reply_author;
+	var comment = req.body.reply_comment;
 	
 	var insert_statement = `INSERT INTO comments(author, post, content, parent)
-							VALUES (${author}, ${post}, ${comment}, ${parent});`;
-	
+							VALUES ('${author}', '${postID}', '${comment}', '${parent}');`;
+
+	db.task('get-everything', task=> {
+		return task.batch([
+			db.any(insert_statement), // inserts new comment to database
+		]);
+	})
+	.then(info=> {
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
+	})
+	.catch(err=>{
+		res.redirect('back');
+	})
 });
 
 
+// Voting on the homepage
+app.post('/home/vote', function(req,res){
 
-// Unnecessary?
+});
+
+
+// Populates dropdown menu of subforums
 app.get('/createPost', function(req, res) {
 	const query='select * from subforums;'
 
 	db.any(query)
         .then(function (rows) {
             res.render('pages/createPost.ejs',{
+				subforums: rows
+			})
+
+        })
+        .catch(function (err) {
+            console.log('error', err);
+            res.render('pages/createPost.ejs', {
+                subforums: ['']
+            })
+        })
+});
+
+
+app.get('/register', function(req, res) {
+	var query = '';
+	db.any(query)
+        .then(function (rows) {
+            res.render('pages/registerPage.ejs',{
 				data: rows
 			})
 
         })
         .catch(function (err) {
             console.log('error', err);
-            res.render('pages/createPost.ejs', {
+            res.render('pages/registerPage.ejs', {
                 data: ''
-            })
-        })
-});
-
-//Unnecessary?
-app.get('/register', function(req, res) {
-	var query = '';
-	db.any(query)
-        .then(function (rows) {
-            res.render('pages/registerPage.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
-			})
-
-        })
-        .catch(function (err) {
-            console.log('error', err);
-            res.render('pages/createPost.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
             })
         })
 });

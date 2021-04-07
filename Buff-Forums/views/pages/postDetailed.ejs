@@ -1,55 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!-- Unnecessary? -->
 <script>
-    function postComment() {
-        if(document.getElementById("comment").value == "")
-        {
-            alert("You cannot post an Empty Comment");
-            return;
-        }
-        var post = document.createElement("P");
-        var username = document.createElement("P");
-        var content = document.createElement("P");
-        var edit = document.createElement("BUTTON");
-        var deleteB = document.createElement("BUTTON");
-        edit.className = "btn btn-outline-primary btn-sm";
-        edit.innerText = "edit";
-        edit.onclick = "editButton()";
-        deleteB.className = "btn btn-outline-primary btn-sm";
-        deleteB.innerText = "delete";
-        username.innerText = "Example Username";
-        username.style.fontStyle = "italic";
-        content.innerText = document.getElementById("comment").value;
-        post.style.borderBottom = "1px solid grey";
-        content.style.textIndent = "20px";
-        document.getElementById("postComments").appendChild(post);
-        post.appendChild(username);
-        post.appendChild(content);
-        post.appendChild(edit);
-        post.appendChild(deleteB);
-        document.getElementById("comment").value = "";
-    }
+    // Function to get value of cookie by the cookie's name
     function getCookie(name) {
-    // Split cookie string and get all individual name=value pairs in an array
     var cookieArr = document.cookie.split(";");
-    
-    // Loop through the array elements
     for(var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split("=");
-        
-        /* Removing whitespace at the beginning of the cookie name
-        and compare it with the given string */
         if(name == cookiePair[0].trim()) {
-            // Decode the cookie value and return
             return decodeURIComponent(cookiePair[1]);
         }
-    }
-    
-    // Return null if not found
-    return null;
+    }    
+    return null;    // Return null if not found
 }
 
+function trimURL(url)
+{
+    // Gets index of the start of the post id in the page's URL
+    var index = url.indexOf("postview/");
+    index += 9;
+
+    return url.substring(index);
+}
+
+// Variable that managed whether or not a reply button has been pressed already
+var replyToggled = 0;
+
+function makeReplyBox(clickedID)
+{
+    // Clears the form if it was toggled
+    if(replyToggled == 1)
+    {
+       document.querySelector(".toggledReplyForm").remove();
+    }
+
+    replyToggled = 1;
+    var form = document.createElement("form");
+    form.setAttribute('method', "POST");
+    form.setAttribute('action', "/postview/reply");
+
+    // Makes the form class "toggledForm so that it can be found and closed with a querySelector(".toggledReplyForm")
+    form.classList.add("toggledReplyForm");
+
+    var text = document.createElement("input");
+    text.setAttribute('type', "text");
+    text.setAttribute('name', "reply_comment");
+
+    var submit = document.createElement("input"); //input element, Submit button
+    submit.setAttribute('type',"submit");
+    submit.setAttribute('value',"Submit");
+
+    var poster = document.createElement("input"); //input element, Submit button
+    poster.setAttribute('type',"hidden");
+    poster.setAttribute('name', "reply_author");
+    poster.setAttribute('value',getCookie("username"));
+
+    form.appendChild(text);
+    form.appendChild(submit);
+    form.appendChild(poster);
+
+    document.getElementById(clickedID).parentElement.appendChild(form);
+
+    // Set's form to request the proper post and comment id
+    var url = "/postview/reply?id=".concat(trimURL(window.location.href));
+    var spanID = "comment" + clickedID;
+    var commentID = document.getElementById(spanID).getAttribute('comment-id');
+    url += "&comment="+commentID;
+    form.action = url;
+}
 </script>
 
 <head>
@@ -116,34 +133,33 @@
             div, p, span{
                 text-align: left;
             }
+            
+            table, tr, td{
+                text-align: left;
+                padding-bottom: 20px;
+            }
+
+            .author, .reply{
+                font-size: 11px;
+            }
         </style>
-      <title><%= post.post_id %></title>
+      <title><%= post.post_title %></title>
 </head>
 
 <body>
 
-    <!--Top navigation bar-->
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-                <h2>Buff Forums</h2>
-            </li>
+      <!--Navigation-->
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+          <a class="nav-link" href="../home">Buff Forums </a>
+      </li>
 
-            <li>
-                <a class="nav-link" href="./home">Home</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="./postview">Post View</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link " href="./createPost">Create Post</a>
-            </li>
-
-
-        </ul>
-    </nav>
+      <li class="nav-item">
+          <a class="nav-link " href="../createPost">Create Post</a>
+      </li>
+    </ul>
+  </nav>
 
 
 
@@ -152,10 +168,9 @@
     <div class="jumbotron" id="postInfo">
         <%  var postContent = ''; ;
             if(post){
-                console.log('post:',post)
-                var author = `<p id="postAuthor">${post.post_creator_name}</p>`;
+                var author = `<span id="postAuthor">Posted by: ${post.post_creator_name}</span>`;
                 var title = `<h4 id="postTitle">${post.post_title}</h4>`;
-                var content = `<div class="border-dark" id="postContent">${post.post_text_content}</div>`;
+                var content = `<div id="postContent">${post.post_text_content}</div>`;
 
                 postContent = `${author}<br>${title}<br><br><hr>${content}`;
             
@@ -179,22 +194,26 @@
                         var voting = '<td id="votingOp"><div>'+
                             '<input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />'+
                             '<span id="voteNum" >'+item.vote_amount+'</span>'+
-                            '<input type="image" src="../../resources/images/downvote" id="vote" onclick="vote(-1)" />'+
+                            '<input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />'+
                             '</div></td>';
 
-                        commentRow = `<tr> ${voting}`; <!--Adds voting to row-->
+                        commentRow = `<tr>`; <!--Adds voting and indentation to row-->
 
-                        <!--Adds indents for number of parent comments(Does not work!)-->
-                        
+                        <!-- Adds indents for number of parent comments(Does not work!) -->
+                        if(item.parent != null)
+                        {
+                            commentRow += '<td></td>';
+                        }
+                        commentRow += `${voting}`; <!--Adds voting and indentation to row-->
 
                         <!-- Gets info from get request and stores in p tags -->
-                        var comment = `<span class="comment">${item.content}</span>`;
+                        var comment = `<span id='comment${replyID}' comment-id='${item.id}' class="comment">${item.content}</span>`;
                         var author = `<span class="author">Posted by ${item.author}</span>`;
                         
                         <!-- Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
-                        var reply = `<a id='${replyID}' onclick="makeReplyBox(this.id)" href="#">Reply</a>`;
+                        var reply = `<a id='${replyID}' class="reply" href="javascript:void(0)" onclick="makeReplyBox(this.id)">Reply</a>`;
 
-                        commentRow += `<td>${comment}<br>${author}<br>${reply}</td>`; <!--Adds comments info to row-->
+                        commentRow += `<td>${comment}<br>${author}  ${reply}</td>`; <!--Adds comments info to row-->
                         
                         commentRow += `</tr>`; <!--Ends row-->
 
@@ -211,33 +230,29 @@
 
     <!--Create a new comment-->
     <div class="container">
-        <% var postID = '';
-            if(post){
-                postID = post.post_id;
-            }
-        %>
-        <%- postID %>
+        
         <p></p>
-        <!--Shows comment box-->
+        <!--Button to show comment box-->
         <a class="btn btn-primary mx-auto d-block" data-toggle="collapse" href="#commentButton" role="button"
             aria-expanded="false" aria-controls="commentButton">
             Comment on Post
-        </a>
+        </a><br>
         <div class="collapse" id="commentButton">
             <div class="form">
                 <form id="comment_on_post_form" action="/postview/comment" method="POST">
+                    <!-- Sets query of form to include post's id by parsing the URL -->
+                    <script>document.getElementById("comment_on_post_form").action = "/postview/comment?id=".concat(trimURL(window.location.href));</script>
+
                     <!--Field for comment text-->
                     <label for="comment">Comment:</label>
-                    <input type="text" id="comment_on_post_comment" name="comment_on_post_comment" placeholder="">
+                    <textarea class="form-control" rows="10" type="textarea" id="comment_on_post_comment" name="comment_on_post_comment" placeholder=""></textarea><br>
                     
                     <!--Hidden fields for post id and author.
-                        Sets post_id using post variable from above
                         Sets post_author using cookie-->
-                    <input type='hidden' id= 'comment_on_post_id' name='comment_on_post_id' value=''   />
-                    <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value='' />
-                    
+                    <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value=''>
+                    <script>document.getElementById("comment_on_post_author").value = getCookie("username");</script>
                     <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
-                    <input type="submit" value="Submit" onclick="getPostID()">
+                    <input type="submit" value="Submit">
                 </form>
             </div>
         </div>
@@ -245,6 +260,5 @@
 
     <br>
 </body>
-<!-- Sets values of hidden fields from post_id and cookie-->
 
 </html>
