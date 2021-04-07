@@ -64,6 +64,7 @@
                 <!-- Check if password is correct for the username -->
                 <!-- If all checks pass, login -->
                 <script>
+                    console.log(getCookie("username"));
                     window.addEventListener('load', function() {
                         var forms = document.getElementsByClassName('loginForm');
                         var validation = Array.prototype.filter.call(forms, function(form) {
