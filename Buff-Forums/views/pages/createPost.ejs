@@ -42,6 +42,11 @@
       </li>
     </ul>
   </nav>
+  <script>
+    var username = document.getElementById("currentUser");
+    var textnodeu = document.createTextNode("Username: " + getCookie("username"));
+    username.appendChild(textnodeu);
+  </script>
 
      
     <div class="container">

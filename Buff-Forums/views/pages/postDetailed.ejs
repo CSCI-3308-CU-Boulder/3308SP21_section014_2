@@ -169,17 +169,22 @@ function makeReplyBox(clickedID)
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-            Profile
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" id = "currentUser"></a>
-            <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
-          </div>
-        </li>
-      </ul>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+          Profile
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" id = "currentUser"></a>
+          <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
+        </div>
+      </li>
+    </ul>
   </nav>
+  <script>
+    var username = document.getElementById("currentUser");
+    var textnodeu = document.createTextNode("Username: " + getCookie("username"));
+    username.appendChild(textnodeu);
+  </script>
 
 
 
