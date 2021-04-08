@@ -29,8 +29,16 @@
       <li class="nav-item active">
           <a class="nav-link " href="./createPost">Create Post</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/login" onclick="logout()">Logout</a>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+          Profile
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" id = "currentUser"></a>
+          <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
+        </div>
       </li>
     </ul>
   </nav>
