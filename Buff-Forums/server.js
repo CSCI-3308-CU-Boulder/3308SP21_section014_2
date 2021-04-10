@@ -41,7 +41,12 @@ var db = pgp(dbConfig);
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
 
-/*Add your get/post request handlers below here: */
+// Cookies from express, used to know who is logged in
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
+/*get/post request handlers: */
 
 app.get('/',function(req,res) {
 	res.redirect('/login');
@@ -80,10 +85,9 @@ app.post('/login/submit',function(req,res) {
 		const validLogin=info[0].exists;
 		if(validLogin) {
 			console.log("Valid Login");
-			res.send({validLogin:true});
-
-			// Creates a cookie from a function in the ../../resources/js/cookies.js file
-			setCookie('username', userNameInput, 1);
+			res.cookie('username', userNameInput).send({validLogin:true}); // Sets username cookie using express
+			// res.redirect('/home');
+			// res.send({validLogin:true});
 		}
 		else {
 			console.log("Invalid Login");
@@ -96,18 +100,19 @@ app.post('/login/submit',function(req,res) {
 });
 
 app.post('/createPost/create',function(req,res) { 
-	const id=req.body.id; 
-	const title=req.body.title; 
-	const username=req.body.username; 
-	const creatorname=req.body.creatorname; 
-	const vote_amount=req.body.vote_amount; 
-	const comments=req.body.comments; 
-	const link=req.body.link; 
-	const query=`INSERT INTO posts(post_id, post_title, subreddit_name, vote_amount, comments, post_link) VALUES('${id}','${title}','${username}','${creatorname}','${vote_amount}','${comments}','${link}');`; 
+	// Gets username from cookies and title/content from the form. The UUID is automatically created when inserted into the database
+	const title=req.body.post_title; 
+	const username=req.cookies.username;
+	const vote_amount=1;
+	const content=req.body.post_details;
+	const subforum = req.body.select_subforum; // Assumes subforum exists
+	// Does not insert into a subforum
+	const query=`INSERT INTO posts(post_title, subforum_name, post_creator_name, post_text_content, vote_amount) VALUES('${title}', '${subforum}', '${username}','${content}','${vote_amount}');`; 
 	db.any(query)
 	.then(function(info) {
 		console.log('Post Creation Successful');
-		res.send({createWorked:true});
+		res.redirect('/home');
+		// res.send({createWorked:true});
 	})
 	.catch(function(err) {
 		console.log(`Post Creation Error:\n ${err}`);
@@ -115,30 +120,26 @@ app.post('/createPost/create',function(req,res) {
 	});
 });
 
-app.get('/b/:subForumId?',function(req,res) {
-	const subForumId=req.params.subForumId;
-	const query_1=`select * from posts where subforum_id='${subForumId}';`;
-	const query_2=`select * from subforums where subforum_id='${subForumId}'`;
+app.get('/b/:subForum',function(req,res) {
+	const subForum=req.params.subForum;
+	const query_1=`select * from posts where subforum_name='${subForum}';`;
 	db.task('get-everything',function(task) {
 		return task.batch([
 			task.any(query_1),
-			task.any(query_2)
 		]);
 	})
 	.then(function(data) {
 		console.log()
 		res.render('pages/subforumPage', {
 			posts:data[0],
-			subForumName:data[1][0].subforum_name,
-			subForumId:data[1][0].subforum_id
+			subForum: subForum
 		});
 	})
 	.catch(function(err) {
 		console.log(`Query Error ${err}`);
 		res.render('pages/subforumPage', {
-			posts:[],
-			subForumName:'Subforum Does Not Exist',
-			subForumId:subForumId
+			posts:[''],
+			subForum:''
 		});
 	});
 });
@@ -171,11 +172,16 @@ app.get('/home', function(req, res) {
 	});
 });
 
+// Voting
+app.put('/home/', function(req, res){
+
+});
+
 // View a specific post with id 'postID' from postDetailed.ejs
-app.get('/postview/:postID?', function(req, res) {
-	var postID = req.query.postID;	// gets postID from URL
+app.get('/postview/:postID', function(req, res) {
+	var postID = req.params.postID;	// gets postID from URL
 	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
-	var query_2 = `select * from comments where Post='${postID}'`; // gets comments on post
+	var query_2 = `select * from comments where post='${postID}'`; // gets comments on post
 
 	db.task('get-everything',function(task) {
 		return task.batch([
@@ -184,10 +190,10 @@ app.get('/postview/:postID?', function(req, res) {
 		]);
 	})
 	.then(function(data) {
-		//console.log(data[0])
+		//console.log(data[0][0])
 		//console.log(data[1])
 		res.render('pages/postDetailed.ejs', {
-			post:data[0], //post
+			post:data[0][0], //post
 			comments:data[1] //comments
 		});
 	})
@@ -203,89 +209,90 @@ app.get('/postview/:postID?', function(req, res) {
 
 // Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
 app.post('/postview/comment', function(req, res){
-	var post = req.params.comment_on_post_id;
-	var author = req.params.comment_on_post_author;
-	var comment = req.params.comment_on_post_comment;
+	var postID = req.query.id;
+	var author = req.body.comment_on_post_author;
+	var comment = req.body.comment_on_post_comment;
 	
-	var insert_statement = `INSERT INTO comments(Author, Post, Content)
-							VALUES (${author}, ${post}, ${comment});`;
-	var getPost = `select * from posts where post_id='${postID}'`;
-	var getComments = `SELECT * FROM comments where Post='${postID}';`;
+	var insert_statement = `INSERT INTO comments(author, post, content)
+							VALUES ('${author}', '${postID}', '${comment}');`;
+
 
 	db.task('get-everything', task=> {
 		return task.batch([
 			db.any(insert_statement), // inserts new comment to database
-			db.any(getPost), // gets post again
-			db.any(getComments) // gets updated comments
 		]);
 	})
 	.then(info=> {
-		res.render('pages/postDetailed.ejs', {
-			post:data[1], //post
-			comments:data[2] //comments
-		});
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
 	})
 	.catch(err=>{
-		res.render('pages/postDetailed.ejs', {
-			post:data[1], //post
-			comments:data[2] //comments
-		});
+		res.redirect('back');
 	})
 });
 
 // Reply to comment from postDetailed.ejs(not functional)
 app.post('/postview/reply', function(req, res){
-	var post = req.query.postID;
-	var author = req.query.username;
-	var comment = req.body.comment;
-	var parent = req.query.parent;
+	var postID = req.query.id;
+	var parent = req.query.comment;
+	var author = req.body.reply_author;
+	var comment = req.body.reply_comment;
 	
-	var insert_statement = `INSERT INTO comments(Author, Post, Content, Parent)
-							VALUES (${author}, ${post}, ${comment}, ${parent});`;
-	
+	var insert_statement = `INSERT INTO comments(author, post, content, parent)
+							VALUES ('${author}', '${postID}', '${comment}', '${parent}');`;
+
+	db.task('get-everything', task=> {
+		return task.batch([
+			db.any(insert_statement), // inserts new comment to database
+		]);
+	})
+	.then(info=> {
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
+	})
+	.catch(err=>{
+		res.redirect('back');
+	})
 });
 
 
+// Voting on the homepage
+app.post('/home/vote', function(req,res){
+
+});
 
 
+// Populates dropdown menu of subforums
 app.get('/createPost', function(req, res) {
-	var query = '';
+	const query='select * from subforums;'
+
 	db.any(query)
         .then(function (rows) {
             res.render('pages/createPost.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
+				subforums: rows
 			})
 
         })
         .catch(function (err) {
             console.log('error', err);
             res.render('pages/createPost.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
+                subforums: ['']
             })
         })
 });
+
 
 app.get('/register', function(req, res) {
 	var query = '';
 	db.any(query)
         .then(function (rows) {
             res.render('pages/registerPage.ejs',{
-				data: rows,
-				color: '',
-				color_msg: ''
+				data: rows
 			})
 
         })
         .catch(function (err) {
             console.log('error', err);
-            res.render('pages/createPost.ejs', {
-                data: '',
-                color: '',
-                color_msg: ''
+            res.render('pages/registerPage.ejs', {
+                data: ''
             })
         })
 });

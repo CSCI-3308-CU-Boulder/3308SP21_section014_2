@@ -1,79 +1,110 @@
 <!DOCTYPE html>
 <html>
+
+<script>
+  function getCookie(name) {
+    var cookieArr = document.cookie.split(";");
+    for(var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split("=");
+        if(name == cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }    
+    return null;    // Return null if not found
+}
+</script>
 <head>
   <%- include('../partials/setup.ejs') %>
   <link rel="stylesheet" href="/views/pages/homepage.css">
   <script src="../../resources/js/voting.js"></script>
   <title>Buff Forums Home</title>
+  <script>
+    function logout() {
+      const username=getCookie('username');
+      alert(`${username} has been logged out.`);
+    }
+  </script>
 </head>
 <body>
   <!--Navigation-->
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <ul class="navbar-nav">
       <li class="nav-item active">
-          <h2>Buff Forums</h2>
-      </li>
-      <li>
-          <a class="nav-link" href="/home">Home</a>
-      </li>
-      
-      <li class="nav-item">
-          <a class="nav-link" href="/postview">Post View</a>
+          <a class="nav-link" href="/home">Buff Forums </a>
       </li>
 
       <li class="nav-item">
           <a class="nav-link " href="/createPost">Create Post</a>
       </li>
-
-
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+          Profile
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" id = "currentUser"></a>
+          <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
+        </div>
+      </li>
     </ul>
   </nav>
+  <script>
+    var username = document.getElementById("currentUser");
+    var textnodeu = document.createTextNode("Username: " + getCookie("username"));
+    username.appendChild(textnodeu);
+</script>
+  
   <!--Subforum sidebar-->
   <div class="sidenav">
     <h2> Sidebar </h2>
     <%
     if(subForums) {
-      let subForumUrl='';
-      let subForumName='';
-      subForums.forEach(function(forumInfo) {
-        subForumName=forumInfo.subforum_name;
-        subForumUrl=forumInfo.subforum_url;
+      var subForumTag='';
+      subForums.forEach(function(forumInfo)
+      {
+        var subForumLink = forumInfo.subforum_name;
+        subForumTag = `<a href="/b/${subForumLink}">${subForumLink}</a>`
     %>
-        <a href=<%=subForumUrl%>> <%=subForumName%> </a>
+        <%- subForumTag %>
     <%
       });
     }
     %>
-
   </div>
-    
+
+  <br><br>
+  
+  <!-- List of posts -->
     <div class="main">
       <div class="postList">
           <div id="wrapper">
+            
             <table id="postContent" style="table-layout: fixed;">
               <%  var i = 0;
                   var postRow = '';
                   posts.every(function(item){
                     <!--HTML for up/down voting-->
-                    var voting = `<td id="votingOp"><div>
-                      <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />
-                      <p id="voteNum" >0</p>
-                      <input type="image" src=".../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />
-                      </div></td>`;
-
-                    postRow = `<tr> ${voting}`; <!--Adds voting to row-->
-
-                    <!-- Gets info from get request and stores in p tags -->
-                    <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
-                    var title = `<p class="title">${item.post_title}<p>`;
-                    var author = `<p class="author">Posted by ${item.post_creator_name}</p>`;
-
-                    postRow += `<td>${title}<br>${author}</td>`; <!--Adds post info to row-->
+                    var voting = '<td id="votingOp"><div>'+
+                      `<form action="/home/vote" method="POST"><input type="image" src="../../resources/images/upvote.png" id="${i}upvote" onclick="vote(1)" />`+
+                      '<span id="voteNum" >'+item.vote_amount+'</span>'+
+                      `<input type="image" src="../../resources/images/downvote.png" id="${i}downvote" onclick="vote(-1)" /></form>`+
+                      '</div></td>';
+                    postRow = '<tr>'+ voting; <!--Adds voting to row-->
                     
-                    postRow =+ `</tr>`; <!--Ends row-->
+
+                    <!-- Gets info from get request and stores in span tags -->
+                      <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
+                    var title = '<span class="title">'+item.post_title+'</span><br>';
+                    var author = '<span class="author">Posted by '+item.post_creator_name+'</span>';
+
+                    <!-- Links the row to its appropriate post link -->
+                    postRow += `<td class="postInfo"><a href="/postview/${item.post_id}">${title+author}</td>`; <!--Adds post info to row-->
+                    
+                    postRow += '</a></tr>'; <!--Ends row-->
               %>
                 
-                <-% postRow %>
+                <%- postRow %>
                 <%  i++;
                     <!-- Only shows 50 posts on homepage -->
                     if(i < 50){return true} 
@@ -83,6 +114,8 @@
         </div>
       </div>
     </div>
+
+    <br><br>
 
   </body>
 

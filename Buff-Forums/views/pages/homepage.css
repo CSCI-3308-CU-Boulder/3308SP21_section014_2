@@ -4,6 +4,7 @@ body {
 
   #navbar
   {
+    
     position:fixed;
     top:0;
     width:100%;
@@ -17,6 +18,7 @@ body {
     background-color: #111;
     overflow-x: hidden;
     padding-top: 20px;
+    color: lightgray;
   }
   
   .sidenav h2 {
@@ -47,8 +49,32 @@ body {
   }
 
   .postList{
-    background-color: rgb(133, 133, 133);
+    background-color: #e9ecef;
+    font-size: 20px;
   }
+
+  .author{
+    font-size: 12px;
+  }
+
+  #postContent a{
+    text-decoration: none;
+    color: black;
+  }
+
+  /* Supposed to remove jitter when hovering */
+  #postContent tr, td, tbody{
+    border-top: 1px transparent;
+    border-bottom: 1px transparent;
+    margin-top:-1px;
+    margin-bottom:-1px;
+  }
+  
+  #postContent tr:hover td{
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+  }
+
   
   /* @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

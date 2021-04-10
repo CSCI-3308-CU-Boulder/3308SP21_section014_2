@@ -5,64 +5,86 @@
   <link rel="stylesheet" href="/views/pages/createPost.css">
   <!-- css for navbars -->
   <link rel="stylesheet" href="/views/pages/homepage.css">
+  <style type="text/css">
+    #subforum_wrapper{
+      max-height: 300px;
+    }
+  </style>
+  <script>
+    function logout() {
+      const username=getCookie('username');
+      alert(`${username} has been logged out.`);
+    }
+  </script>
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <!--Navigation-->
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
     <ul class="navbar-nav">
+      <li class="nav-item">
+          <a class="nav-link" href="./home">Buff Forums </a>
+      </li>
+
       <li class="nav-item active">
-        <h2>Buff Forums</h2>
+          <a class="nav-link " href="./createPost">Create Post</a>
       </li>
-  
-      <li>
-        <a class="nav-link" href="./home">Home</a>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+          Profile
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" id = "currentUser"></a>
+          <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
+        </div>
       </li>
-      
-      <li class="nav-item">
-        <a class="nav-link" href="./postView">Post View</a>
-      </li>
-  
-      <li class="nav-item">
-        <a class="nav-link " href="./createPost">Create Post</a>
-      </li>
-  
     </ul>
   </nav>
+  <script>
+    var username = document.getElementById("currentUser");
+    var textnodeu = document.createTextNode("Username: " + getCookie("username"));
+    username.appendChild(textnodeu);
+  </script>
 
+     
     <div class="container">
         <p></p>
         <h1>Create New Post</h1>
-        <div id="title">
-            <div class="form-group">
-                <label for="comment">Title:</label>
-                <textarea class="form-control" rows="1" id="comment"></textarea>
-            </div>
-        </div>
 
         <div class="details">
-            <div class="textarea-container">
-                <label for="comment">Details:</label>
-                <textarea class="form-control" rows="15" id="comment"></textarea>
 
-                <form action="/action_page.php">
-                  <input type="file" id="myFile" accept="image/*" onchange= "loadFile(event)">
-                  <img id = "output"/>
-                  <script>
-                    var loadFile = function(event) {
-                    var output = document.getElementById('output');
-                    output.src = URL.createObjectURL(event.target.files[0]);
-                    output.onload = function() {
-                      URL.revokeObjectURL(output.src)
-                    }
-                  };
-                  </script>
-                </form>
+          <form id="make_post" action="/createPost/create" method="POST">
+            <div class="form-group">
+              <label for="comment">Title:</label>
+              <textarea class="form-control" rows="1" name="post_title" id="post_title"></textarea>
             </div>
+            <div class="textarea-container">
+              <label for="comment">Details:</label>
+              <textarea class="form-control" rows="15" name="post_details" id="post_details"></textarea>
+            </div>
+            <br>
+            <!-- Temp Image submission -->
+            <!-- <input type="file" id="myFile" accept="image/*" onchange= "loadFile(event)">
+            <img id = "output"/> -->
 
+
+            <!-- Dropdown menu that populates all subforums for selection. Allows user input to create new subforum -->
+            <input list="subforum_list" name="select_subforum" id="select_subforum" placeholder="Select Subforum"/>
+              <datalist id="subforum_list">
+                <%  var options = '';
+                      subforums.forEach(function(sub){
+                        options  = `<option value='${sub.subforum_name}'>${sub.subforum_name}</option>`;
+                      
+                  %>
+                    <%- options %>
+                  <% }); %>
+              </datalist>
+            
+            <button type="submit" class="btn btn-primary mx-auto d-block">Publish</button>
+          </form>
         </div>
-
-        <p></p>
-        <button type="submit" class="btn btn-primary mx-auto d-block">Publish</button>
-
     </div>
 
 </body>
