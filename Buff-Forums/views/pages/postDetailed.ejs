@@ -71,6 +71,22 @@ function makeReplyBox(clickedID)
         console.log(document.cookie['username']);
         alert("you have logged out");
     }
+
+    function vote(vote, id)
+    {
+        var votes = document.getElementById(id).textContent;
+        var votenum = parseInt(votes) + vote;
+        document.getElementById(id).innerHTML = votenum;
+    }
+
+    function checkComment()
+    {
+        if(document.getElementById("comment_on_post_comment").value == "")
+        {
+            alert("You cannot post an Empty Comment");
+            return;
+        }
+    }
 </script>
 
 <head>
@@ -216,14 +232,13 @@ function makeReplyBox(clickedID)
                     comments.every(function(item){
                         replyID++;
                         <!--HTML for up/down voting-->
-                        var voting = '<td id="votingOp"><div>'+
-                            '<input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />'+
-                            '<span id="voteNum" >'+item.vote_amount+'</span>'+
-                            '<input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />'+
-                            '</div></td>';
-
+                        var voting = `<td id="votingOp"><div>
+                            <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1,'voteNum${item.id}')" />
+                            <span id='voteNum${item.id}' >${item.vote_amount}</span>
+                            <input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1,'voteNum${item.id}')" />
+                            </div></td>`;
+                        
                         commentRow = `<tr>`; <!--Adds voting and indentation to row-->
-
                         <!-- Adds indents for number of parent comments(Does not work!) -->
                         if(item.parent != null)
                         {
@@ -277,7 +292,7 @@ function makeReplyBox(clickedID)
                     <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value=''>
                     <script>document.getElementById("comment_on_post_author").value = getCookie("username");</script>
                     <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
-                    <input type="submit" value="Submit">
+                    <input type="submit" value="Submit" onclick="checkComment()">
                 </form>
             </div>
         </div>
