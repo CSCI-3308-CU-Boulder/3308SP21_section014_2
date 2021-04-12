@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 DROP TABLE IF EXISTS subforums CASCADE;
 CREATE TABLE IF NOT EXISTS subforums (
-  subforum_name VARCHAR(50) NOT NULL DEFAULT 'Default Subforum'
+  subforum_name VARCHAR(50) NOT NULL PRIMARY KEY DEFAULT 'Default Subforum'
 );
 
 
@@ -23,6 +23,11 @@ CREATE TABLE IF NOT EXISTS posts (
   vote_amount SMALLINT NOT NULL DEFAULT 1,
   CONSTRAINT fk_author FOREIGN KEY ("post_creator_name")
         REFERENCES public."logins" ("username") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+  CONSTRAINT fk_subforum FOREIGN KEY ("subforum_name")
+        REFERENCES public."subforums" ("subforum_name") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
         NOT VALID
