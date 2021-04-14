@@ -214,12 +214,10 @@ function makeReplyBox(clickedID)
     <div class="jumbotron" id="postInfo">
         <%  var postContent = ''; ;
             if(post){
-                var author = `<span id="postAuthor">Posted by: ${post.post_creator_name}</span>`;
                 var title = `<h4 id="postTitle">${post.post_title}</h4>`;
+                var author = `<span id="postAuthor">Posted by: ${post.post_creator_name}</span>`;
                 var content = `<div id="postContent">${post.post_text_content}</div>`;
-
-                postContent = `${author}<br>${title}<br><br><hr>${content}`;
-            
+                postContent = `${title}${author}<br><hr>${content}`;
         %>
 
         <%- postContent %>

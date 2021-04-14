@@ -206,6 +206,20 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
+app.post('/postview/vote',function(req,res) {
+	const voteAmount=req.body.voteAmount;
+	const commentId=req.body.commentId;
+	const query=`INSERT INTO logins(username, pwd) VALUES('${newUsername}','${newPassword}');`;
+	db.any(query)
+	.then(function(info) {
+		console.log('Vote Value Changed');
+	})
+	.catch(function(err) {
+		console.log(`Failed to Change Vote Value:\n ${err}`);
+	});
+});
+
+
 
 // Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
 app.post('/postview/comment', function(req, res){
