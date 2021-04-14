@@ -11,7 +11,16 @@
         }
     }    
     return null;    // Return null if not found
-}
+  }
+  function postVote(deltaVote,postId) {
+    const reqUrl="/postVote";
+    console.log("post voted on");
+    console.log(postId);
+    //'/postVote'
+    //const postID=req.params.postID;
+	  //const voteChange=req.params.voteAmount;
+    $.post(reqUrl,{postId:postId,voteChange:deltaVote});
+  }
 </script>
 <head>
   <%- include('../partials/setup.ejs') %>
@@ -85,26 +94,28 @@
                   var postRow = '';
                   posts.every(function(item){
                     <!--HTML for up/down voting-->
-                    var voting = '<td id="votingOp"><div>'+
-                      `<form action="/home/vote" method="POST"><input type="image" src="../../resources/images/upvote.png" id="${i}upvote" onclick="vote(1)" />`+
-                      '<span id="voteNum" >'+item.vote_amount+'</span>'+
-                      `<input type="image" src="../../resources/images/downvote.png" id="${i}downvote" onclick="vote(-1)" /></form>`+
-                      '</div></td>';
-                    postRow = '<tr>'+ voting; <!--Adds voting to row-->
-                    
+
+              %>
+                    <tr> <!--Adds voting to row-->
+                    <td id="votingOp"><div>
+                    <input type="image" src="../../resources/images/upvote.png" id="${i}upvote" onclick="postVote(1,item.post_id)" />
+                    <span id="voteNum" ><%=item.vote_amount%></span>
+                    <input type="image" src="../../resources/images/downvote.png" id="${i}downvote" onclick="postVote(-1,item.post_id)" />
+                    </div></td>
 
                     <!-- Gets info from get request and stores in span tags -->
                       <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
-                    var title = '<span class="title">'+item.post_title+'</span><br>';
-                    var author = '<span class="author">Posted by '+item.post_creator_name+'</span>';
+
 
                     <!-- Links the row to its appropriate post link -->
-                    postRow += `<td class="postInfo"><a href="/postview/${item.post_id}">${title+author}</td>`; <!--Adds post info to row-->
+                    <td class="postInfo"><a href="/postview/${item.post_id}">
+                    <span class="title"><%=item.post_title%></span><br>
+                    <span class="author">Posted by <%=item.post_creator_name%></span>
+                    </td> <!--Adds post info to row-->
                     
-                    postRow += '</a></tr>'; <!--Ends row-->
-              %>
+                    </a></tr> <!--Ends row-->
+            
                 
-                <%- postRow %>
                 <%  i++;
                     <!-- Only shows 50 posts on homepage -->
                     if(i < 50){return true} 
