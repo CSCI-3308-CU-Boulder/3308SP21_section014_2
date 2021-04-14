@@ -101,11 +101,14 @@ app.post('/login/submit',function(req,res) {
 
 app.post('/createPost/create',function(req,res) { 
 	// Gets username from cookies and title/content from the form. The UUID is automatically created when inserted into the database
-	const title=req.body.post_title; 
+	let title=req.body.post_title; 
 	const username=req.cookies.username;
 	const vote_amount=1;
-	const content=req.body.post_details;
+	let content=req.body.post_details;
 	const subforum = req.body.select_subforum; // Assumes subforum exists
+	//allows for form input with an apostrophe
+	content=content.replace(/'/g,"''");
+	title=title.replace(/'/g,"''");
 	// Does not insert into a subforum
 	const query=`INSERT INTO posts(post_title, subforum_name, post_creator_name, post_text_content, vote_amount) VALUES('${title}', '${subforum}', '${username}','${content}','${vote_amount}');`; 
 	db.any(query)
@@ -172,11 +175,12 @@ app.get('/home', function(req, res) {
 	});
 });
 
-/*
+
 // Vote on a post on any page homepage or subforum
 app.post('/postVote',function(req,res) {
 	const postID=req.params.postID;
-	const voteQuery=`select * from posts where post_id='${postID}'`; // gets post
+	const voteChange=req.params.voteAmount;
+	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postID}';`;
 	db.any(query)
 	.then(function(info) {
 		console.log('Post Vote Value Changed');
@@ -185,7 +189,8 @@ app.post('/postVote',function(req,res) {
 		console.log(`Failed to Change Post Vote Value:\n ${err}`);
 	});
 })
-*/
+
+
 // View a specific post with id 'postID' from postDetailed.ejs
 app.get('/postview/:postID', function(req, res) {
 	var postID = req.params.postID;	// gets postID from URL
@@ -215,7 +220,7 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
-app.post('/postview/vote',function(req,res) {
+app.post('/postview//',function(req,res) {
 	const voteAmount=req.body.voteAmount;
 	const commentId=req.body
 	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;
@@ -228,14 +233,13 @@ app.post('/postview/vote',function(req,res) {
 	});
 });
 
-
-
 // Comment on post from form in postDetailed.ejs using hidden input fields for author and postid
 app.post('/postview/comment', function(req, res){
 	var postID = req.query.id;
 	var author = req.body.comment_on_post_author;
 	var comment = req.body.comment_on_post_comment;
-	
+	//allows for form input with an apostrophe
+	comment=comment.replace(/'/g,"''");
 	var insert_statement = `INSERT INTO comments(author, post, content)
 							VALUES ('${author}', '${postID}', '${comment}');`;
 
@@ -259,7 +263,8 @@ app.post('/postview/reply', function(req, res){
 	var parent = req.query.comment;
 	var author = req.body.reply_author;
 	var comment = req.body.reply_comment;
-	
+	//allows for form input with an apostrophe
+	comment=comment.replace(/'/g,"''");
 	var insert_statement = `INSERT INTO comments(author, post, content, parent)
 							VALUES ('${author}', '${postID}', '${comment}', '${parent}');`;
 
@@ -275,13 +280,6 @@ app.post('/postview/reply', function(req, res){
 		res.redirect('back');
 	})
 });
-
-
-// Voting on the homepage
-app.post('/home/vote', function(req,res){
-
-});
-
 
 // Populates dropdown menu of subforums
 app.get('/createPost', function(req, res) {
