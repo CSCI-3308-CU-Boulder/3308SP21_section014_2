@@ -2,7 +2,7 @@
 <html>
 
 <script>
-    function getCookie(name) {
+  function getCookie(name) {
     var cookieArr = document.cookie.split(";");
     for(var i = 0; i < cookieArr.length; i++) {
         var cookiePair = cookieArr[i].split("=");
@@ -11,15 +11,19 @@
         }
     }    
     return null;    // Return null if not found
-    }
-    
+  }
+  function postVote(deltaVote,post_id,i) {
+    const postID=post_id;
+    const reqUrl="/home/postVote";
+    $.post(reqUrl,{postId:postID,voteAmount:deltaVote});
+    window.location.reload();
+  }
 </script>
-
 <head>
   <%- include('../partials/setup.ejs') %>
   <link rel="stylesheet" href="/views/pages/homepage.css">
   <script src="../../resources/js/voting.js"></script>
-  <title><%=subForum%></title>
+  <title>Buff Forums Home</title>
   <script>
     function logout() {
       const username=getCookie('username');
@@ -28,80 +32,85 @@
   </script>
 </head>
 <body>
-    <!--Navigation-->
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-            <a class="nav-link" href="/home">Buff Forums </a>
-        </li>
+  <!--Navigation-->
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+          <a class="nav-link" href="/home">Buff Forums </a>
+      </li>
+
+      <li class="nav-item">
+          <a class="nav-link " href="/createPost">Create Post</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+          Profile
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" id = "currentUser"></a>
+          <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  <script>
+    var username = document.getElementById("currentUser");
+    var textnodeu = document.createTextNode("Username: " + getCookie("username"));
+    username.appendChild(textnodeu);
+</script>
   
-        <li class="nav-item">
-            <a class="nav-link " href="/createPost">Create Post</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-            Profile
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" id = "currentUser"></a>
-            <a class="dropdown-item" href="/login" onclick="logout()">Logout</a>
-          </div>
-        </li>
-      </ul>
-    </nav>
-    <script>
-      var username = document.getElementById("currentUser");
-      var textnodeu = document.createTextNode("Username: " + getCookie("username"));
-      username.appendChild(textnodeu);
-  </script>
-
-  </div>
-    
-  <br><br>
-
-  <div class="main">
-    <div class="postList">
-        <div id="wrapper">
-          <table id="postContent" style="table-layout: fixed;">
-            <%  var i = 0;
-                var postRow = '';
-                posts.every(function(item){
-                  <!--HTML for up/down voting-->
-                  var voting = '<td id="votingOp"><div>'+
-                    '<input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1)" />'+
-                    '<span id="voteNum" >'+item.vote_amount+'</span>'+
-                    '<input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1)" />'+
-                    '</div></td>';
-                  postRow = '<tr>'+ voting; <!--Adds voting to row-->
-
-                  
-
-                  <!-- Gets info from get request and stores in span tags -->
+  <!-- List of posts -->
+    <div class="main">
+      <div class="postList">
+          <div id="wrapper">
+            
+            <table id="postContent" style="table-layout: fixed;">
+              <script>
+                var idDict={};
+                var iJs=0;
+              </script>
+              <%  var i = 0;
+                  var postRow = '';
+                  posts.every(function(item) {
+                    
+              %> 
+                    <!--HTML for up/down voting-->
+                    <tr> <!--Adds voting to row-->
+                    <td id="votingOp">
+                      <div>
+                        <input type="image" src="../../resources/images/upvote.png" onclick="postVote(1,'<%=item.post_id%>')" />
+                          <span id="voteNum">
+                            <%=item.vote_amount%>
+                          </span>
+                        <input type="image" src="../../resources/images/downvote.png" onclick="postVote(-1,'<%=item.post_id%>')" />
+                      </div>
+                  </td>
+                    
+                    <!-- Gets info from get request and stores in span tags -->
                     <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
-                  var title = '<span class="title">'+item.post_title+'</span><br>';
-                  var author = '<span class="author">Posted by '+item.post_creator_name+'</span>';
-
-                  <!-- Links the row to its appropriate post link -->
-                  postRow += `<td class="postInfo"><a href="/postview/${item.post_id}">${title+author}</td>`; <!--Adds post info to row-->
-                  
-                  postRow += '</a></tr>'; <!--Ends row-->
-            %>
-              
-              <%- postRow %>
-              <%  i++;
-                  <!-- Only shows 50 posts on homepage -->
-                  if(i < 50){return true} 
-                  });
+                   
+                    <!-- Links the row to its appropriate post link -->
+                    <td class="postInfo"><a href="/postview/<%=item.post_id%>">
+                    <span class="title"><%=item.post_title%></span><br>
+                    <span class="author">Posted by <%=item.post_creator_name%></span>
+                    </td> <!--Adds post info to row-->
               %>
-          </table>
+                <%  i++;
+                    <!-- Only shows 50 posts on homepage -->
+                    if(i < 50){
+                      return true
+                    } 
+                  });
+                %>
+            </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <br><br>
+    <br><br>
 
-</body>
+  </body>
 
 </html> 
