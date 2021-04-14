@@ -172,11 +172,20 @@ app.get('/home', function(req, res) {
 	});
 });
 
-// Voting
-app.put('/home/', function(req, res){
-
-});
-
+/*
+// Vote on a post on any page homepage or subforum
+app.post('/postVote',function(req,res) {
+	const postID=req.params.postID;
+	const voteQuery=`select * from posts where post_id='${postID}'`; // gets post
+	db.any(query)
+	.then(function(info) {
+		console.log('Post Vote Value Changed');
+	})
+	.catch(function(err) {
+		console.log(`Failed to Change Post Vote Value:\n ${err}`);
+	});
+})
+*/
 // View a specific post with id 'postID' from postDetailed.ejs
 app.get('/postview/:postID', function(req, res) {
 	var postID = req.params.postID;	// gets postID from URL
@@ -208,8 +217,8 @@ app.get('/postview/:postID', function(req, res) {
 
 app.post('/postview/vote',function(req,res) {
 	const voteAmount=req.body.voteAmount;
-	const commentId=req.body.commentId;
-	const query=`INSERT INTO logins(username, pwd) VALUES('${newUsername}','${newPassword}');`;
+	const commentId=req.body
+	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;
 	db.any(query)
 	.then(function(info) {
 		console.log('Vote Value Changed');
