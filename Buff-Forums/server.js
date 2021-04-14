@@ -178,10 +178,10 @@ app.get('/home', function(req, res) {
 
 // Vote on a post on any page homepage or subforum
 app.post('/postVote',function(req,res) {
-	const postID=req.params.postID;
+	const postId=req.params.postId;
 	const voteChange=req.params.voteAmount;
-	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postID}';`;
-	db.any(query)
+	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postId}';`;
+	db.any(voteQuery)
 	.then(function(info) {
 		console.log('Post Vote Value Changed');
 	})
