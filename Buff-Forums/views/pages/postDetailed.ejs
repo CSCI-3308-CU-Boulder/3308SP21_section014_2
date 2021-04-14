@@ -84,7 +84,12 @@ function makeReplyBox(clickedID)
         if(document.getElementById("comment_on_post_comment").value == "")
         {
             alert("You cannot post an Empty Comment");
+            document.getElementById("commentSubmit").type = "button";
             return;
+        }
+        else
+        {
+            document.getElementById("commentSubmit").type = "submit";
         }
     }
 </script>
@@ -238,6 +243,8 @@ function makeReplyBox(clickedID)
                             <input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1,'voteNum${item.id}')" />
                             </div></td>`;
                         
+
+                        
                         commentRow = `<tr>`; <!--Adds voting and indentation to row-->
                         <!-- Adds indents for number of parent comments(Does not work!) -->
                         if(item.parent != null)
@@ -263,6 +270,8 @@ function makeReplyBox(clickedID)
                 <%    return true;
                     });
                 %>
+
+
               </table>
         </div>
     </div>
@@ -292,7 +301,7 @@ function makeReplyBox(clickedID)
                     <input type='hidden' id= 'comment_on_post_author' name='comment_on_post_author' value=''>
                     <script>document.getElementById("comment_on_post_author").value = getCookie("username");</script>
                     <!--Submit button. Calls app.post(/postview/comment) request in server.js-->
-                    <input type="submit" value="Submit" onclick="checkComment()">
+                    <input type="submit" value="Submit" id="commentSubmit" onclick="checkComment()">
                 </form>
             </div>
         </div>
