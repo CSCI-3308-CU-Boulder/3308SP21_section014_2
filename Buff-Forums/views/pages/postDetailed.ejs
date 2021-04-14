@@ -238,6 +238,8 @@ function makeReplyBox(clickedID)
                   var commentRow = '';
                     var replyID = 0; //Creates a new ID for every reply button so that the makeReplyBox function appends the reply form to the correct location -->
                     var comments = '<%- comments %>';
+                    console.log( '<%- comments[0].id %>');
+                    console.log('<%= comments %>');
                     var posting = comments.forEach(function(item){
                         replyID++;
                         //HTML for up/down voting-->
