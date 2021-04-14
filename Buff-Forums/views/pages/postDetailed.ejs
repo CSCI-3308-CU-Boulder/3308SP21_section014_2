@@ -178,7 +178,7 @@ function makeReplyBox(clickedID)
         function makeReplyToParent(replyID, parentID)
         {
             reply = document.getElementById(replyID);
-            document.getElementById(parentID).innerHTML = reply.inner;
+            document.getElementById(parentID).innerHTML = reply.innerHTML;
         }
       </script>
 </head>
@@ -262,9 +262,9 @@ function makeReplyBox(clickedID)
                         var author = `<span class="author">Posted by ${item.author}</span>`;
                         
                         <!--Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
-                        var reply = `<a id='${replyID}' class="reply" href="javascript:void(0)" onclick="makeReplyBox(this.id)">Reply</a>`;
+                        <!--var reply = `<a id='${replyID}' class="reply" href="javascript:void(0)" onclick="makeReplyBox(this.id)">Reply</a>`;-->
 
-                        commentRow += `<div>${comment}<br>${author}  ${reply}</div>`; <!--Adds comments info to row-->
+                        commentRow += `<div>${comment}<br>${author}</div>`; <!--Adds comments info to row-->
                         
                         commentRow += `</div>`; <!--Ends row-->
                         
