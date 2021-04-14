@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS posts (
         REFERENCES public."logins" ("username") MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-        NOT VALID
+        NOT VALID,
   CONSTRAINT fk_subforum FOREIGN KEY ("subforum_name")
         REFERENCES public."subforums" ("subforum_name") MATCH SIMPLE
         ON UPDATE NO ACTION
