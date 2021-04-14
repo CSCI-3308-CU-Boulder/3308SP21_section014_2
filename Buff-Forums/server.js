@@ -149,7 +149,7 @@ app.get('/b/:subForum',function(req,res) {
 
 // View Homepage from homePage.ejs
 app.get('/home', function(req, res) {
-	const query_1='select * from posts;'; // gets every post
+	const query_1='select * from posts ORDER BY vote_amount DESC;'; // gets every post
 	const query_2='select * from subforums;'; // gets every subforum
 	
 	db.task('get-everything',function(task) {
@@ -177,9 +177,9 @@ app.get('/home', function(req, res) {
 
 
 // Vote on a post on any page homepage or subforum
-app.post('/postVote',function(req,res) {
-	const postId=req.params.postId;
-	const voteChange=req.params.voteAmount;
+app.post('/home/postVote',function(req,res) {
+	const postId=req.body.postId;
+	const voteChange=req.body.voteAmount;
 	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postId}';`;
 	db.any(voteQuery)
 	.then(function(info) {
@@ -187,6 +187,12 @@ app.post('/postVote',function(req,res) {
 	})
 	.catch(function(err) {
 		console.log(`Failed to Change Post Vote Value:\n ${err}`);
+	})
+	.then(info=> {
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
+	})
+	.catch(err=>{
+		res.redirect('back');
 	});
 })
 
@@ -220,7 +226,7 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
-app.post('/postview//',function(req,res) {
+app.post('/postview/',function(req,res) {
 	const voteAmount=req.body.voteAmount;
 	const commentId=req.body
 	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;

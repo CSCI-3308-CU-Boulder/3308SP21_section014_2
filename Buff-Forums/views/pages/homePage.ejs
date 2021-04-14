@@ -12,14 +12,11 @@
     }    
     return null;    // Return null if not found
   }
-  function postVote(deltaVote,postId) {
-    const reqUrl="/postVote";
-    console.log("post voted on");
-    console.log(postId);
-    //'/postVote'
-    //const postID=req.params.postID;
- 	  //const voteChange=req.params.voteAmount;
-    $.post(reqUrl,{postId:postId,voteChange:deltaVote});
+  function postVote(deltaVote,post_id,i) {
+    const postID=post_id;
+    const reqUrl="/home/postVote";
+    $.post(reqUrl,{postId:postID,voteAmount:deltaVote});
+    window.location.reload();
   }
 </script>
 <head>
@@ -90,17 +87,26 @@
           <div id="wrapper">
             
             <table id="postContent" style="table-layout: fixed;">
+              <script>
+                var idDict={};
+                var iJs=0;
+              </script>
               <%  var i = 0;
                   var postRow = '';
                   posts.every(function(item) {
-              %>
+                    
+              %> 
                     <!--HTML for up/down voting-->
                     <tr> <!--Adds voting to row-->
-                    <td id="votingOp"><div>
-                    <input type="image" src="../../resources/images/upvote.png" id="${i}upvote" onclick="postVote(1,item.post_id)" />
-                    <span id="voteNum" ><%=item.vote_amount%></span>
-                    <input type="image" src="../../resources/images/downvote.png" id="${i}downvote" onclick="postVote(-1,item.post_id)" />
-                    </div></td>
+                    <td id="votingOp">
+                      <div>
+                        <input type="image" src="../../resources/images/upvote.png" onclick="postVote(1,'<%=item.post_id%>')" />
+                          <span id="voteNum">
+                            <%=item.vote_amount%>
+                          </span>
+                        <input type="image" src="../../resources/images/downvote.png" onclick="postVote(-1,'<%=item.post_id%>')" />
+                      </div>
+                  </td>
                     
                     <!-- Gets info from get request and stores in span tags -->
                     <!-- var preview = `<img src='' style='max-width:100%; max-height:100%'>`;-->
