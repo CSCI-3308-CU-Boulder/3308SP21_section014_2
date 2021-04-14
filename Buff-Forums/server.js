@@ -86,8 +86,6 @@ app.post('/login/submit',function(req,res) {
 		if(validLogin) {
 			console.log("Valid Login");
 			res.cookie('username', userNameInput).send({validLogin:true}); // Sets username cookie using express
-			// res.redirect('/home');
-			// res.send({validLogin:true});
 		}
 		else {
 			console.log("Invalid Login");
@@ -124,8 +122,9 @@ app.post('/createPost/create',function(req,res) {
 });
 
 app.get('/b/:subForum',function(req,res) {
+	
 	const subForum=req.params.subForum;
-	const query_1=`select * from posts where subforum_name='${subForum}';`;
+	const query_1=`select * from posts where subforum_name='${subForum}' ORDER BY vote_amount DESC;`;
 	db.task('get-everything',function(task) {
 		return task.batch([
 			task.any(query_1),
@@ -149,7 +148,7 @@ app.get('/b/:subForum',function(req,res) {
 
 // View Homepage from homePage.ejs
 app.get('/home', function(req, res) {
-	const query_1='select * from posts;'; // gets every post
+	const query_1='select * from posts ORDER BY vote_amount DESC;'; // gets every post
 	const query_2='select * from subforums;'; // gets every subforum
 	
 	db.task('get-everything',function(task) {
@@ -177,16 +176,22 @@ app.get('/home', function(req, res) {
 
 
 // Vote on a post on any page homepage or subforum
-app.post('/postVote',function(req,res) {
-	const postID=req.params.postID;
-	const voteChange=req.params.voteAmount;
-	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postID}';`;
-	db.any(query)
+app.post('/home/postVote',function(req,res) {
+	const postId=req.body.postId;
+	const voteChange=req.body.voteAmount;
+	const voteQuery=`UPDATE posts SET vote_amount=vote_amount + ${voteChange} WHERE post_id='${postId}';`;
+	db.any(voteQuery)
 	.then(function(info) {
 		console.log('Post Vote Value Changed');
 	})
 	.catch(function(err) {
 		console.log(`Failed to Change Post Vote Value:\n ${err}`);
+	})
+	.then(info=> {
+		res.redirect('back'); // Redirects to the post page, showing the newly added comment
+	})
+	.catch(err=>{
+		res.redirect('back');
 	});
 })
 
@@ -220,7 +225,7 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
-app.post('/postview//',function(req,res) {
+app.post('/postview/',function(req,res) {
 	const voteAmount=req.body.voteAmount;
 	const commentId=req.body
 	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;

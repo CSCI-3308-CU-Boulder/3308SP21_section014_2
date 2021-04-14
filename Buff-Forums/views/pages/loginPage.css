@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url(6d91d6cfc1bf3a6abe224a47c38196c9.jpeg);
+    background-size: cover;
+}
+
+.wrapper{
+    padding-left: 20px;
+}
+
+.rounded{
+    width: 1200px;
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    
+}
+
+.login-text{
+    padding-left: 25px;
+}
+
+.login-text h1{
+    color: rgb(0, 0, 0);
+}
+
+.login-text h4{
+    color: #cfb87c;
+}
+
+.container{
+    color: black;
+}
+
+.container a{
+    color:black;
+    font-size: 17px;
+}
