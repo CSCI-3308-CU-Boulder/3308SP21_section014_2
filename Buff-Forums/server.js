@@ -86,8 +86,6 @@ app.post('/login/submit',function(req,res) {
 		if(validLogin) {
 			console.log("Valid Login");
 			res.cookie('username', userNameInput).send({validLogin:true}); // Sets username cookie using express
-			// res.redirect('/home');
-			// res.send({validLogin:true});
 		}
 		else {
 			console.log("Invalid Login");
@@ -124,8 +122,9 @@ app.post('/createPost/create',function(req,res) {
 });
 
 app.get('/b/:subForum',function(req,res) {
+	
 	const subForum=req.params.subForum;
-	const query_1=`select * from posts where subforum_name='${subForum}';`;
+	const query_1=`select * from posts where subforum_name='${subForum}' ORDER BY vote_amount DESC;`;
 	db.task('get-everything',function(task) {
 		return task.batch([
 			task.any(query_1),
