@@ -72,12 +72,6 @@ function makeReplyBox(clickedID)
         alert("you have logged out");
     }
 
-    function vote(vote, id)
-    {
-        var votes = document.getElementById(id).textContent;
-        var votenum = parseInt(votes) + vote;
-        document.getElementById(id).innerHTML = votenum;
-    }
 
     function checkComment()
     {
@@ -174,6 +168,17 @@ function makeReplyBox(clickedID)
           const username=getCookie('username');
           alert(`${username} has been logged out.`);
         }
+        function vote(voteNum, id)
+        {
+            var voteId = "voteNum"+id;
+            voteNum = parseInt(voteNum);
+            document.getElementById(voteId).textContent = parseInt(document.getElementById(voteId).textContent)+voteNum;
+            $.post('/postview/vote',{voteAmount:voteNum,commentId:id });
+        }
+        function appendParent(parentID, childID)
+        {
+            document.getElementById(parentID).appendChild("test");
+        }
       </script>
 </head>
 
@@ -228,49 +233,62 @@ function makeReplyBox(clickedID)
     <!--Comments-->
     <br>
     <div class="jumbotron" id="postComments">
-        <div class="text-center" id="comments">
-            <table id="commentTable" style="table-layout: fixed;">
-                <%  var commentRow = '';
-                    var replyID = 0; <!-- Creates a new ID for every reply button so that the makeReplyBox function appends the reply form to the correct location -->
-                    comments.every(function(item){
+        <div class="text-center" id="commentsList">
+            <script>
+                  var commentRow = '';
+                    var replyID = 0; //Creates a new ID for every reply button so that the makeReplyBox function appends the reply form to the correct location -->
+                    var comments = '<%- comments %>';
+                    console.log( '<%- comments[0].id %>');
+                    console.log('<%= comments %>');
+                    var posting = comments.forEach(function(item){
                         replyID++;
-                        <!--HTML for up/down voting-->
-                        var voting = `<td id="votingOp"><div>
-                            <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1,'voteNum${item.id}')" />
+                        //HTML for up/down voting-->
+                        var voting = `<div>
+                            <input type="image" src="../../resources/images/upvote.png" id="vote" onclick="vote(1,'${item.id}')" />
                             <span id='voteNum${item.id}' >${item.vote_amount}</span>
-                            <input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1,'voteNum${item.id}')" />
-                            </div></td>`;
+                            <input type="image" src="../../resources/images/downvote.png" id="vote" onclick="vote(-1,'${item.id}')" />
+                            </div>`;
                         
 
                         
-                        commentRow = `<tr>`; <!--Adds voting and indentation to row-->
-                        <!-- Adds indents for number of parent comments(Does not work!) -->
+                        commentRow = `<div id = 'row${item.id}'>`; //Adds voting and indentation to row-->
+                        //Adds indents for number of parent comments(Does not work!) -->
                         if(item.parent != null)
                         {
-                            commentRow += '<td></td>';
+                            commentRow += '<hr>';
                         }
-                        commentRow += `${voting}`; <!--Adds voting and indentation to row-->
+                        commentRow += `${voting}`; //Adds voting and indentation to row-->
 
-                        <!-- Gets info from get request and stores in p tags -->
+                        //Gets info from get request and stores in p tags -->
                         var comment = `<span id='comment${replyID}' comment-id='${item.id}' class="comment">${item.content}</span>`;
                         var author = `<span class="author">Posted by ${item.author}</span>`;
                         
-                        <!-- Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
+                        //Form for replying to comment. Calls function from ../../resources/js/comments.js that creates a form to make a comment-->
                         var reply = `<a id='${replyID}' class="reply" href="javascript:void(0)" onclick="makeReplyBox(this.id)">Reply</a>`;
 
-                        commentRow += `<td>${comment}<br>${author}  ${reply}</td>`; <!--Adds comments info to row-->
+                        commentRow += `<div>${comment}<br>${author}  ${reply}</div>`; //Adds comments info to row-->
                         
-                        commentRow += `</tr>`; <!--Ends row-->
-
-                %>
+                        commentRow += `</div>`; //Ends row-->
+                        
+                        if(item.parent != null)
+                        { 
+            
+                            document.getElementById(`row${item.parent}`).appendChild(commentRow);
+                            
                   
-                    <%- commentRow %>
-                <%    return true;
+                        }
+                        else
+                        { 
+                
+                            document.getElementById('commentsList').appendChild(commentRow);
+                            
+                        }   
+                           
+                        
+
+                    return true;
                     });
-                %>
-
-
-              </table>
+            </script>
         </div>
     </div>
 
