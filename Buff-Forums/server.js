@@ -225,9 +225,9 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
-app.post('/postview/',function(req,res) {
+app.post('/postview/vote',function(req,res) {
 	const voteAmount=req.body.voteAmount;
-	const commentId=req.body
+	const commentId=req.body.commentId;
 	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;
 	db.any(query)
 	.then(function(info) {
