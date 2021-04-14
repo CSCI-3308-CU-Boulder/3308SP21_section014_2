@@ -12,6 +12,7 @@ body {
 .rounded{
     width: 1200px;
     background-color: white;
+    padding-top: 20px;
     padding-bottom: 20px;
     
 }
