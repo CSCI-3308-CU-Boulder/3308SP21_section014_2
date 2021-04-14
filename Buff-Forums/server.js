@@ -195,8 +195,8 @@ app.post('/postVote',function(req,res) {
 app.get('/postview/:postID', function(req, res) {
 	var postID = req.params.postID;	// gets postID from URL
 	var query_1 = `select * from posts where post_id='${postID}'`; // gets post
-	var query_2 = `select * from comments where post='${postID}'`; // gets comments on post
-
+	var query_2 = `select * from comments where post='${postID}' ORDER BY parent desc, vote_amount desc`; // gets comments on post
+	
 	db.task('get-everything',function(task) {
 		return task.batch([
 			task.any(query_1),
