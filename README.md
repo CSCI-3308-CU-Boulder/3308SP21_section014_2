@@ -14,11 +14,13 @@ Users register and login to the site before they reach the homepage, which is po
 If the user does not account they will be able to create an account through the registration page.
 Sub forums can be navigated to from the homepage to narrow the type of posts seen.
 These will be located on the provided sidebar in the homepage.
+
 In the detailed view of a post, comments can be created, using cookies created on login to determine the author of a comment.
 Similarly, when creating a post, the author, text content, title, and sub-forum selection are used to add the post to the database.
 Users will also be able to upvote or downvote posts.
 The posts will subsequently reorder in descending order based on the amount of upvotes.
 Users will also be able to upvote and downvote other user comments as well.
+
 Ultimately, it is valuable for students to interact with one another to share and communicate easily.
 For this reason, the goal of our application is to connect CU students in an easy to use manner on a platform which allows them to express their ideas and thoughts within the CU community.
 
