@@ -24,7 +24,7 @@ Users will also be able to upvote and downvote other user comments as well.
 Ultimately, it is valuable for students to interact with one another to share and communicate easily.
 For this reason, the goal of our application is to connect CU students in an easy to use manner on a platform which allows them to express their ideas and thoughts within the CU community.
 
-### Viewing Program
+### Running and Viewing Buff-Forums as a Docker Container in Browser
 The Docker environment deploys the application by using NodeJS in the background to run the application and it is served over HTTP using Express on port 3000 of the host machine and can be viewed in the client’s browser at http://localhost:3000.
 
 A client can run Buff Forums in their browser by following these steps using their machine’s graphical user interface and a linux command line interface (CLI):
