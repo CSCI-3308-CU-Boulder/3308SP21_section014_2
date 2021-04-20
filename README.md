@@ -38,6 +38,31 @@ For this reason, the goal of our application is to connect CU students in an eas
 * To stop the application from the CLI
   * $ docker-compose down
 
+### Repository Organization
+* Buff Forums (code)
+  * init_data
+    * create.sql (database created
+    * insert.sql (initial posts and comments added to database)
+  * resources
+    * images
+    * js
+  * views
+    * pages
+    * comments.ejs
+    * createPost.ejs
+    * homePage.ejs (displays homepage
+    * loginPage.ejs (displays login page)
+    * postDetailed.ejs (displays a post and its comments)
+    * registerPage.ejs (displays registration page)
+    * subforumPage.ejs (displays subforum page)
+  * docker-compose.yml
+  * package-lock.json
+  * package.json
+  * server.js (route handlers)
+* meeting-logs
+* milestone-submissions
+* Architecture Diagram.JPG
+* README.md
 
 ### Architecture Plan
 The website’s frontend is created using HTML, CSS, javascript, and EJS templating to display posts, comments, and show navigation options.
