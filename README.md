@@ -21,6 +21,24 @@ The posts will subsequently reorder in descending order based on the amount of u
 Users will also be able to upvote and downvote other user comments as well.
 Ultimately, it is valuable for students to interact with one another to share and communicate easily.
 For this reason, the goal of our application is to connect CU students in an easy to use manner on a platform which allows them to express their ideas and thoughts within the CU community.
+
+### Viewing Program
+* Download and Install Docker for your machine (https://docs.docker.com/get-docker/)
+* Start the Docker application
+* Download Buff-Forums using the git repository
+  * $ git clone https://github.com/CSCI-3308-CU-Boulder/3308SP21_section014_2.git
+
+* To start application from CLI
+  * $ cd CSCI3308.../Buff Forums
+  * $ docker-compose up
+
+* To view  application, in web browser navigate to 
+  * localhost:3000
+
+* To stop the application from the CLI
+  * $ docker-compose down
+
+
 ### Architecture Plan
 The website’s frontend is created using HTML, CSS, javascript, and EJS templating to display posts, comments, and show navigation options.
 This user interface communicates with the backend by following HTTP protocol using Node.js route handlers.
