@@ -45,16 +45,23 @@ For this reason, the goal of our application is to connect CU students in an eas
     * insert.sql (initial posts and comments added to database)
   * resources
     * images
+      * culogo.png
+      * ...
     * js
+      * cookies.js
+      * ...
   * views
     * pages
-    * comments.ejs
-    * createPost.ejs
-    * homePage.ejs (displays homepage
-    * loginPage.ejs (displays login page)
-    * postDetailed.ejs (displays a post and its comments)
-    * registerPage.ejs (displays registration page)
-    * subforumPage.ejs (displays subforum page)
+      * comments.ejs
+      * createPost.ejs
+      * homePage.ejs (displays homepage
+      * loginPage.ejs (displays login page)
+      * postDetailed.ejs (displays a post and its comments)
+      * registerPage.ejs (displays registration page)
+      * subforumPage.ejs (displays subforum page)
+      * ...
+    * partials
+      * setup.ejs
   * docker-compose.yml
   * package-lock.json
   * package.json
