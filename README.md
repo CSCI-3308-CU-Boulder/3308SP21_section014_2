@@ -92,3 +92,16 @@ The backend will use a PostgreSQL database to store user accounts, posts, and co
 
 ### Architecture Diagram
 ![Architecture Diagram](https://github.com/CSCI-3308-CU-Boulder/3308SP21_section014_2/blob/1fca83d33efaa0da43fa08665fe7485d671f0e98/Architecture%20Diagram.JPG)
+
+### Testing
+* Feature 1: Registering and logging in
+  * Users should be able to create accounts and login in from the registration and login pages.
+  * UAT: A user will go to the specified URL for the website which will redirect to a login page. They should select the “I don’t have an account yet” link to get to the registration page. They should be able to input a valid username and password to generate their account. If the information they enter is valid, then they will be redirected to the home page.   Once logged in, if a user presses the sign out button in the navbar, then they will be logged out. Should they go to the login page again, a cookie will still hold their username, but they will need to re enter their password to log back in. Additionally on the registration page, passwords will be checked to see if they meet the listed minimum strength requirements and if they do not meet the requirements then an error message will be outputted to the user. Also if a confirmation password does not match the original, then an error will be outputted.
+
+* Feature 2: Posting
+  * Users should be able to create text posts from the post creation page and see them properly displayed on the homepage and specified subforum.
+  * UAT: A logged in user should select the “make post” button in the navigation bar from any page, excluding registration/login. From the page they were redirected to, they should be able to input a title of their post, the post’s content, and specify a subforum to post to. If the text inputted for the post title or for a comment is empty or if it is over the character limits for titles and content. Then an error will be outputted and the post will not be submitted. If the post content passes these checks, then the user will be redirected to the new post page. The new post page will be visible for all users. Additionally the high-level view of the home or a subforum will contain a short description of the created post.
+
+* Feature 3: Commenting
+  * Users should be able to successfully comment on posts and see their comments displayed on posts.
+  * UAT: A user can click on the comment button which will create a text area where they can create a comment. When they click on the submit button, the comment and their username will appear on the post. If they navigate back to that post or other users navigate to the post, the comment will remain there. Additionally if a user clicks on the upvote or downvote button next to a comment, the comment’s “score” will correspondingly go up or down. This score will be visible to other users as well. A user can also reply to any comment and assuming the reply is not empty, the reply will appear beneath the replied to comment and persist across any page refreshes 
