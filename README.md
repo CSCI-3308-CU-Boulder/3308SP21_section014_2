@@ -23,17 +23,23 @@ Ultimately, it is valuable for students to interact with one another to share an
 For this reason, the goal of our application is to connect CU students in an easy to use manner on a platform which allows them to express their ideas and thoughts within the CU community.
 
 ### Viewing Program
+The Docker environment deploys the application by using NodeJS in the background to run the application and it is served over HTTP using Express on port 3000 of the host machine and can be viewed in the client’s browser at http://localhost:3000.
+
+A client can run Buff Forums in their browser by following these steps using their machine’s graphical user interface and a linux command line interface (CLI):
+
 * Download and Install Docker for your machine (https://docs.docker.com/get-docker/)
+
 * Start the Docker application
+
 * Download Buff-Forums using the git repository
   * $ git clone https://github.com/CSCI-3308-CU-Boulder/3308SP21_section014_2.git
 
 * To start application from CLI
-  * $ cd CSCI3308.../Buff Forums
+  * $ cd 3308SP21_section014_2/Buff Forums
   * $ docker-compose up
 
-* To view  application, in web browser navigate to 
-  * localhost:3000
+* To view application in browser, navigate to 
+  * http://localhost:3000
 
 * To stop the application from the CLI
   * $ docker-compose down
