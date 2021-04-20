@@ -46,7 +46,7 @@ A client can run Buff Forums in their browser by following these steps using the
 * To stop the application from the CLI
   * $ docker-compose down
 
-* If encountering issues with database initialization, remove conflicting volumes tied to other docker containers
+* If encountering issues with database initialization, remove conflicting volumes tied to the docker container
   * $ docker volume list
   * $ docker volume rm buff-forums_buff_forums_volume
 
