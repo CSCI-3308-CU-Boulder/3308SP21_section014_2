@@ -27,19 +27,32 @@ var pgp = require('pg-promise')();
   password: This the password for accessing the database. We set this in the
 		docker-compose.yml for now, usually that'd be in a seperate file so you're not pushing your credentials to GitHub :).
 **********************/
-const dbConfig = {
+const dev_dbConfig = {
 	host: 'db',
 	port: 5432,
-	database: 'buff_forums_db',
-	user: 'postgres',
-	password: 'pwd'
+	database: process.env.POSTGRES_DB,
+	user:  process.env.POSTGRES_USER,
+	password: process.env.POSTGRES_PASSWORD
 };
+
+/** If we're running in production mode (on heroku), the we use DATABASE_URL
+ * to connect to Heroku Postgres.
+ */
+ const isProduction = process.env.NODE_ENV === 'production';
+ const dbConfig = isProduction ? process.env.DATABASE_URL : dev_dbConfig;
+ 
+ // Heroku Postgres patch for v10
+ // fixes: https://github.com/vitaly-t/pg-promise/issues/711
+ if (isProduction) {
+   pgp.pg.defaults.ssl = {rejectUnauthorized: false};
+ }
 
 var db = pgp(dbConfig);
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname));
+app.set('views', __dirname + '/views');
+app.use(express.static(__dirname + '/'));//This line is necessary for us to use relative paths and access our resources directory
 
 // Cookies from express, used to know who is logged in
 var cookieParser = require('cookie-parser');
@@ -220,9 +233,9 @@ app.get('/postview/:postID', function(req, res) {
 	});
 });
 
-app.post('/postview//',function(req,res) {
+app.post('/postview/vote/',function(req,res) {
 	const voteAmount=req.body.voteAmount;
-	const commentId=req.body
+	const commentId=req.body.commentId;
 	const query=`UPDATE comments SET vote_amount=vote_amount + ${voteAmount} WHERE id='${commentId}';`;
 	db.any(query)
 	.then(function(info) {
@@ -318,5 +331,8 @@ app.get('/register', function(req, res) {
         })
 });
 
-app.listen(3000);
-console.log('3000 is the magic port');
+// app.listen(3000);
+// console.log('3000 is the magic port');
+const server = app.listen(process.env.PORT || 3000, () => {
+	console.log(`Express running → PORT ${server.address().port}`);
+  });
