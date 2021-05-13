@@ -8,6 +8,10 @@ Noah Warren,
 Marcus Chong,
 Caleb Jimenez
 
+### Deployed to Heroku at
+https://buff-forums.herokuapp.com
+
+
 ### Application Description
 A web application like reddit where users can create and interact with text posts.
 Users register and login to the site before they reach the homepage, which is populated with posts stored in the database.
@@ -24,7 +28,8 @@ Users will also be able to upvote and downvote other user comments as well.
 Ultimately, it is valuable for students to interact with one another to share and communicate easily.
 For this reason, the goal of our application is to connect CU students in an easy to use manner on a platform which allows them to express their ideas and thoughts within the CU community.
 
-### Running and Viewing Buff-Forums as a Docker Container in Browser
+
+### Running and Viewing Buff-Forums as a Docker Container Locally
 The Docker environment deploys the application by using NodeJS in the background to run the application and it is served over HTTP using Express on port 3000 of the host machine and can be viewed in the client’s browser at http://localhost:3000.
 
 A client can run Buff Forums in their browser by following these steps using their machine’s graphical user interface and a linux command line interface (CLI):
