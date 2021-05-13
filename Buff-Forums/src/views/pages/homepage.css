@@ -1,82 +1,91 @@
 body {
-    font-family: "Lato", sans-serif;
-  }
+  font-family: "Lato", sans-serif;
+  background-color: #cfb87c;
+}
 
-  #navbar
-  {
-    
-    position:fixed;
-    top:0;
-    width:100%;
-  }
-  .sidenav {
-    height: 100%;
-    width: 220px;
-    position:fixed;
-    z-index: 1;
-    right: 0;
-    background-color: #111;
-    overflow-x: hidden;
-    padding-top: 20px;
-    color: lightgray;
-  }
+#navbar {
+  position:fixed;
+  top:0;
+  width:100%;
+  background-color: black;
+}
+
+.sidenav {
+  height: 100%;
+  width: 220px;
+  position:fixed;
+  z-index: 1;
+  right: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+  color: lightgray;
+}
+
+.sidenav h2 {
+  padding: 0px 55px;
+}
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.li {
+  margin-left: 160px; 
+  font-size: 28px; 
+  padding: 0px 10px;
+}
+
+.main {
+  margin-left: 10px; 
+  font-size: 28px;  
+  padding: 0px 10px;
+  /* padding-top: 20px; */
+  /* width: 1660px; */
+  width: 87.3%;
+  color:black;
+}
+
+#postInfoSection a{
+  text-decoration: none;
+  color: black;
+}
+
+#postInfoSection{
+  padding-left: 50px;
+}
+
+#voteSection{
+  width: 50px;
+  height: 20px;
+  /* padding-bottom: 20px; */
+}
+
+#voteNum{
+  padding-left: 3px;
+}
+
+#spacer{
+  padding-bottom: 20px;
+}
+
+.author{
+  font-size: medium;
+}
+.card-body:hover{
+  border: solid black;
+  padding-left: 17px;
+  padding-top: 17px;
   
-  .sidenav h2 {
-    padding: 0px 55px;
-  }
-  .sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 20px;
-    color: #818181;
-    display: block;
-  }
-  
-  .sidenav a:hover {
-    color: #f1f1f1;
-  }
-  
-  .li {
-    margin-left: 160px; 
-    font-size: 28px; 
-    padding: 0px 10px;
-  }
+}
 
-  .main {
-    margin-left: 10px; 
-    font-size: 28px; 
-    padding: 0px 10px;
-  }
-
-  .postList{
-    background-color: #e9ecef;
-    font-size: 20px;
-  }
-
-  .author{
-    font-size: 12px;
-  }
-
-  #postContent a{
-    text-decoration: none;
-    color: black;
-  }
-
-  /* Supposed to remove jitter when hovering */
-  #postContent tr, td, tbody{
-    border-top: 1px transparent;
-    border-bottom: 1px transparent;
-    margin-top:-1px;
-    margin-bottom:-1px;
-  }
-  
-  #postContent tr:hover td{
-    border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-  }
-
-  
-  /* @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
-  } */
+#spacer:hover{
+  padding-bottom: 17px;
+}

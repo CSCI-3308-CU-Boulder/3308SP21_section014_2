@@ -9,6 +9,7 @@
         <!-- css for navbars -->
         <link rel="stylesheet" href="/views/pages/homepage.css">
         <link rel="stylesheet" href="/views/pages/forms.css">
+        <link rel="stylesheet" href="/views/pages/loginPage.css">
         <title>Login</title>
 
 
@@ -30,33 +31,41 @@
             </ul>
         </nav>
 
-        <!-- Login Form-->
-        <div class="container" id="formContainer">
-            <div class="col-auto-sm">
-                <form class="loginForm" novalidate>
-                    <div class="form-group">
-                        <label for="userNameInput" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="userNameInput" placeHolder="Username" size=20 required>
-                        <div class="invalid-feedback">
-                            Please enter a username.
-                        </div>
-                    </div>
+        <div class="wrapper"><div class="rounded">
 
-                    <div class="form-group">
-                        <label for="passwordInput">Password</label>
-                        <input type="password" class="form-control" id="passwordInput" placeHolder="Password" name="originalPassword" size=25 required>
-                        <div class="invalid-feedback">
-                            Please enter a password.
+        
+            <div class=login-text>
+                <h1>Welcome to Buff Forums!</h1>
+                <h4>Where all buffs can share their ideas, thoughts and more</h4>  
+            </div>
+            <!-- Login Form-->
+            <div class="container" id="formContainer">
+                <div class="col-auto-sm">
+                    <form class="loginForm" novalidate>
+                        <div class="form-group">
+                            <label for="userNameInput" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="userNameInput" placeHolder="Username" size=20 required>
+                            <div class="invalid-feedback">
+                                Please enter a username.
+                            </div>
                         </div>
-                    </div>
-                    <button type="Login" class="btn btn-primary" href="./homePage.html">Login</button>
-                    
-                    <small class="form-text text-muted">
-                        <a href="/register">
-                            Don't have an account?
-                        </href>
-                    </small>
-                </form>
+
+                        <div class="form-group">
+                            <label for="passwordInput">Password</label>
+                            <input type="password" class="form-control" id="passwordInput" placeHolder="Password" name="originalPassword" size=25 required>
+                            <div class="invalid-feedback">
+                                Please enter a password.
+                            </div>
+                        </div>
+                        <button type="Login" class="btn btn-primary" href="./homePage.html">Login</button>
+                        
+                        <small class="form-text text-muted">
+                            <a href="/register">
+                                Don't have an account?
+                            </href>
+                        </small>
+                    </form>
+        </div></div>
 
                 <!-- Script for Validating Form Input-->
                 <!-- Next steps-->
