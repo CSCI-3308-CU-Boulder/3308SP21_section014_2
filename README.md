@@ -8,10 +8,6 @@ Noah Warren,
 Marcus Chong,
 Caleb Jimenez
 
-### Deployed to Heroku at
-https://buff-forums.herokuapp.com
-
-
 ### Application Description
 A web application like reddit where users can create and interact with text posts.
 Users register and login to the site before they reach the homepage, which is populated with posts stored in the database.
